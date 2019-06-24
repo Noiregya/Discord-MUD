@@ -18,6 +18,4 @@ class Name {
     }
   }
 }
-module.exports = {
-  Name: Name
-}
+module.exports = Name

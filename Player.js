@@ -1,3 +1,5 @@
+const Inventory = require('./Inventory.js')
+
 /**
  * @class
  * A humain player.
@@ -7,13 +9,11 @@ class Player {
    * @constructor
    * Creates a Player
    * @param {!Name} name - Name of the Player
-   * @param {!Inventory} inventory - An existing bag to give the player
    */
   constructor (name, inventory) {
     this.name = name
-    this.inventory = inventory
+    this.inventory = new Inventory()
+    this.activeQuests = new Array()
   }
 }
-module.exports = {
-  Player: Player
-}
+module.exports = Player

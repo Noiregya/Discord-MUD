@@ -1,7 +1,7 @@
 const WorldAction = require('./WorldAction.js')
 /**
  * @class
- * A teleportation to somewhere.
+ * A Death.
  */
 class Death extends WorldAction {
   /**

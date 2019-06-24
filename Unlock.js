@@ -15,6 +15,4 @@ class Unlock extends WorldAction {
     this.pass = pass
   }
 }
-module.exports = {
-  Unlock: Unlock
-}
+module.exports = Unlock

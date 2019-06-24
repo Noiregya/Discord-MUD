@@ -18,6 +18,4 @@ class Teleportation extends WorldAction {
     this.map = map
   }
 }
-module.exports = {
-  Teleportation: Teleportation
-}
+module.exports = Teleportation
