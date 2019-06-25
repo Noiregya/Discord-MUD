@@ -41,8 +41,8 @@ const commands = {
 }
 const helpMessage = 'You can look around by typing look, open your bag with bag and ask for help. Maybe you can also do other things, who knows?'
 
-//Global vars
-var Players = new Array()
+//Global vars (To save)
+var players = new Array()
 
 function parseMessage (string) {
   var spaces = string.trim().split('"')
@@ -60,11 +60,32 @@ function parseMessage (string) {
 }
 
 function sendHelp(author){
+  var player = checkPlayerExist(author)
+  if(player){
+    var string = 'You have been active in '+player.guild.name+' for the last time.'
+  }else{
+    var string = 'It says on the register that you have never played.'
+  }
   author.createDM().then(
     DMChannel =>{
-      DMChannel.send(helpMessage).catch(
+      DMChannel.send(helpMessage+'\n'+string).catch(
         err => console.log('Could not send DM\n'+err))
       }, err => console.log('Could not send DM\n'+err))
+}
+
+/**
+ * Check if a user already has a player in the playerlist.
+ * @param user - The user
+ * @return - undefined if it's a new player, the player object otherwise
+ */
+function checkPlayerExist(user){
+  let testPlayer = function(player){
+    if(user.id === user.id){
+      return true
+    }
+  return false
+  }
+  return players.find(testPlayer)
 }
 
 /* EVENTS */
@@ -98,14 +119,27 @@ client.on('message', function (message) {
     if (parsedMessage[0].toUpperCase().match(commands.regHelp)) {
       sendHelp(message.author)
     }
-    /*
-    DM/Text channel check, might have to be used in command specific conditions
-    instead of outside like here.
+
+    //DM/Text channel check, might have to be used in command specific conditions too
     if (message.channel.type === 'text') {
+      //Create contextual function checkplayer (needed for use with search)
+      let currentPlayer = checkPlayerExist (message.author)
+      if(currentPlayer === undefined){
+        //Player was never seen before
+        currentPlayer = new Classes.Player(message.member.displayName, message.author.id, message.guild)
+        players.push(currentPlayer)
+      } else {
+        //Player is already known.
+        //Update last guild and username
+        //console.log('Player already known');
+        currentPlayer.guild = message.guild
+        currentPlayer.name = message.member.displayName
+      }
+      console.log('Activity detected from '+currentPlayer.name)
 
     } else if (message.channel.type === 'dm') {
 
-    }*/
+    }
   }
 })
 

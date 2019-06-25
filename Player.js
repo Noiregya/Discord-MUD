@@ -10,9 +10,10 @@ class Player {
    * Creates a Player
    * @param {!Name} name - Name of the Player
    */
-  constructor (id, name) {
+  constructor (name, id, guild) {
     this.id = id
     this.name = name
+    this.guild = guild
     this.inventory = new Inventory()
     this.activeQuests = new Array()
     this.passes = new Array()
