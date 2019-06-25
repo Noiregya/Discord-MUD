@@ -1,0 +1,28 @@
+{
+  "name": "mudbot",
+  "version": "0.5.0",
+  "description": "A bot created for discord Hackweek. It's a textual adventure game playable within discord in multiplayer.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Noiregya/mudbot.git"
+  },
+  "keywords": [
+    "adventure",
+    "MUD",
+    "text",
+    "bot"
+  ],
+  "author": "Noiregya",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Noiregya/mudbot/issues"
+  },
+  "homepage": "https://github.com/Noiregya/mudbot#readme",
+  "dependencies": {
+    "discord.js": "^11.5.1"
+  }
+}
