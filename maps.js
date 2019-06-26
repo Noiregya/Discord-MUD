@@ -1,6 +1,12 @@
 //An example of map file generation
 //Generate map file
 
+const mapsFilePath = './generatedMaps.json'
+const fs = require('fs');
+const Classes = require('./classes/Classes.js')
+
+var maps = new Array()
+
 let mapOne = new Classes.WorldMap( //Declare a first map
     new Classes.Name('First map', ['Other name', 'A third name']), //The map name and aliases
     'Placeholder description of first map',
