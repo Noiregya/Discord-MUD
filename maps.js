@@ -1,5 +1,4 @@
-//An example of map file generation
-//Generate map file
+//Generate map file with `node maps.js`
 
 const mapsFilePath = './generatedMaps.json'
 const fs = require('fs');
@@ -11,7 +10,7 @@ let mapOne = new Classes.WorldMap( //Declare a first map
     new Classes.Name('First map', ['Other name', 'A third name']), //The map name and aliases
     'Placeholder description of first map',
     //List of the map's directions
-    [, new Classes.Direction( //A first direction
+    [new Classes.Direction( //A first direction
         new Classes.Name('Direction second map', ['South']), //The name and aliases of the direction
         'This is the second map that you can find by taking the south path.', //Text that describe the description
         1//Index of the map the direction leads to
