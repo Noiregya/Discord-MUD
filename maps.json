@@ -1,0 +1,183 @@
+[
+   {
+      "description":"Placeholder description of first map",
+      "name":{
+
+      },
+      "directions":[
+         null,
+         {
+            "description":"This is the second map that you can find by taking the south path.",
+            "name":{
+               "name":"Direction second map",
+               "aliases":[
+                  "South"
+               ]
+            },
+            "map":1
+         },
+         {
+            "description":"This is the second map that you can find by taking the north path.",
+            "name":{
+               "name":"Also direction second map",
+               "aliases":[
+                  "North"
+               ]
+            },
+            "map":1
+         }
+      ],
+      "interactions":[
+         {
+            "description":"You cannot do anything with this rock.",
+            "name":{
+               "name":"A rock that you can do nothing with.",
+               "aliases":[
+                  "Rock",
+                  "Boulder"
+               ]
+            },
+            "type":"it does nothing so we can put anything/nothing here"
+         },
+         {
+            "description":"You pick up the coin and put it in your bag.",
+            "name":{
+               "name":"A coin that you can pick.",
+               "aliases":[
+                  "coin",
+                  "money"
+               ]
+            },
+            "type":"grabbable",
+            "items":[
+               {
+                  "name":{
+                     "name":"Coin",
+                     "aliases":[
+                        "coin"
+                     ]
+                  },
+                  "description":"A rusty coin.",
+                  "consequences":[
+
+                  ]
+               }
+            ]
+         }
+      ]
+   },
+   {
+      "description":"Placeholder description of second map, there is a lever on the left, on the right, on the middle and on the back.",
+      "name":{
+         "name":"Second map",
+         "aliases":[
+
+         ]
+      },
+      "directions":[
+         {
+            "description":"Text that displays when you go back to the first map.",
+            "name":{
+               "name":"Direction first map",
+               "aliases":[
+                  "South",
+                  "Back"
+               ]
+            },
+            "map":0
+         }
+      ],
+      "interactions":[
+         {
+            "description":"You activate the lever.",
+            "name":{
+               "name":"A dubitous lever on the left.",
+               "aliases":[
+                  "left",
+                  "left lever"
+               ]
+            },
+            "type":"activable",
+            "consequences":[
+               {
+                  "description":"The ground starts to crumble, you fall in a pit to your doom",
+                  "type":"death",
+                  "player":""
+               }
+            ]
+         },
+         {
+            "description":"You activate the middle lever.",
+            "name":{
+               "name":"A trusty lever on the middle.",
+               "aliases":[
+                  "middle",
+                  "middle lever"
+               ]
+            },
+            "type":"activable",
+            "consequences":[
+               {
+                  "description":"You see a flash of light only to find yourself in some sort of forest.",
+                  "type":"teleportation",
+                  "player":"",
+                  "map":2
+               }
+            ]
+         },
+         {
+            "description":"You activate the funky lever.",
+            "name":{
+               "name":"A funky lever on the right.",
+               "aliases":[
+                  "right",
+                  "right lever"
+               ]
+            },
+            "type":"activable",
+            "consequences":[
+               {
+                  "description":"You see a ticket poking out of the wall. You decide to take it.",
+                  "type":"unlock",
+                  "pass":"ticket"
+               }
+            ]
+         },
+         {
+            "description":"You activate the hidden lever.",
+            "name":{
+               "name":"A hidden lever on the back.",
+               "aliases":[
+                  "back",
+                  "back lever"
+               ]
+            },
+            "type":"activable",
+            "consequences":[
+               {
+                  "description":"You put the ticket in the wall, the light turns green.",
+                  "type":"lock",
+                  "successDescription":"You see a flat hole on the wall lighting up, looks like it's asking for something",
+                  "pass":"ticket",
+                  "consequences":{
+                     "description":"The wall opens and you walk in some sort of forest.",
+                     "type":"teleportation",
+                     "player":"",
+                     "map":2
+                  }
+               }
+            ]
+         }
+      ]
+   },
+   {
+      "description":"You are in a lively forest, there's no signs of the dungeon you just escaped from. Congratulations, you won.",
+      "name":"The end forest",
+      "directions":[
+
+      ],
+      "interactions":[
+
+      ]
+   }
+]

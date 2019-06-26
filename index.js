@@ -4,7 +4,7 @@
 const Discord = require('discord.js')
 const yaml = require('js-yaml')
 const fs = require('fs');
-const Classes = require('./Classes.js')
+const Classes = require('./classes/Classes.js')
 
 //Objects
 const client = new Discord.Client()
@@ -40,9 +40,14 @@ const commands = {
   regAct: /^IMITATE|^ACT LIKE$|^ACT/
 }
 const helpMessage = 'You can look around by typing look, open your bag with bag and ask for help. Maybe you can also do other things, who knows?'
+const playersFilePath = './players.json'
+const mapsFilePath = './maps.json'
 
 //Global vars (To save)
 var players = new Array()
+var maps = new Array()
+var isWritingPlayer = false
+var isWaiting = false
 
 function parseMessage (string) {
   var spaces = string.trim().split('"')
@@ -73,14 +78,55 @@ function sendHelp(author){
       }, err => console.log('Could not send DM\n'+err))
 }
 
+//Save all players into a file
+async function savePlayers(){
+  //Is someone else writing
+  if(!isWritingPlayer){
+    //No one is, write file
+    isWaiting = false
+    isWritingPlayer = true
+    fs.writeFile(playersFilePath,JSON.stringify(players),function(){
+      isWritingPlayer = false
+      console.log('Wrote');
+    })
+  } else {
+    if(isWaiting){
+      //Already waiting, abort
+      console.log('Abort');
+      return
+    }
+    //Starts waiting 5 seconds
+    isWaiting = true;
+    console.log('Timeout set');
+    setTimeout(savePlayers, 5000)
+  }
+}
+
+function loadPlayers(){
+  try{
+    players = JSON.parse(fs.readFileSync(playersFilePath))
+  }catch(error){
+    console.log('No '+playersFilePath+' file loaded.');
+  }
+}
+
+function loadMaps(){
+  try{
+    maps = JSON.parse(fs.readFileSync(mapsFilePath))
+  }catch(error){
+    console.log('No '+mapsFilePath+' file loaded.');
+  }
+}
+
 /**
  * Check if a user already has a player in the playerlist.
  * @param user - The user
  * @return - undefined if it's a new player, the player object otherwise
+ * TODO: Support for multiple guilds, unique player for (user_id,guid_id) pairs
  */
 function checkPlayerExist(user){
   let testPlayer = function(player){
-    if(user.id === user.id){
+    if(user.id === player.id){
       return true
     }
   return false
@@ -104,6 +150,13 @@ client.on('error', function (error) {
 //Client initialisation
 client.on('ready', function(){
   console.log('Welcome to MUDBot.'+'\n')
+//Loading data
+  loadPlayers()
+  loadMaps()
+  console.log(players.length);
+  console.log(maps.length);
+  console.log(maps[2].description);
+//Ready
   console.log('Logged in as '+client.user.tag+'!')
   client.user.setActivity("Ask for help!",{ type: 'LISTENING' }).then(function(presence){
   },function(err){
@@ -135,6 +188,7 @@ client.on('message', function (message) {
         currentPlayer.guild = message.guild
         currentPlayer.name = message.member.displayName
       }
+      savePlayers()
       console.log('Activity detected from '+currentPlayer.name)
 
     } else if (message.channel.type === 'dm') {
