@@ -152,8 +152,8 @@ function evaluateName(name, string){
   }
 }
 
-//Returns WorldMap object
-function resolveMap(mapName){
+//Returns WorldMap object in the map pool
+function resolveMap(mapName, mapList){
   let findMap = function(evaluatedMap){
     var name = evaluateName(evaluatedMap.name, mapName)
     if(evaluatedMap.name === name){
@@ -161,17 +161,20 @@ function resolveMap(mapName){
     }
     return false
   }
-  let map = maps.find(findMap)
+  let map = mapList.find(findMap)
   return map
 }
 
 function travel(currentPlayer, parsedMessage, channel){
-  //TODO: Replace placeholder.
   let i = 1
   if(parsedMessage[i].toUpperCase() === 'TO'){
     i++
   }
-  var map = resolveMap(parsedMessage[i])
+  let availableMaps = new Array
+  maps[currentPlayer.position].directions.forEach(direction =>{
+    availableMaps.push(maps[direction.map])
+  })
+  var map = resolveMap(parsedMessage[i], availableMaps)
 //  console.log(resolveMap(parsedMessage[i]));
   if(map){
     currentPlayer.position = maps.indexOf(map)
@@ -226,7 +229,7 @@ client.on('message', function (message) {
         currentPlayer.name = message.member.displayName
       }
       savePlayers()
-      console.log('Activity detected from '+currentPlayer.name)
+      //console.log('Activity detected from '+currentPlayer.name)
 
     } else if (message.channel.type === 'dm') { //in a DM
 
