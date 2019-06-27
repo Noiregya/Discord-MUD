@@ -24,7 +24,7 @@ const commands = {
   regGo: /^GO$|^ENTER$|LEAVE$|^CROSS$|^TRAVEL$/,
   regFlee: /^FLEE$|^RUN$/,
   regLook: /^LOOK$|^WHERE$/,
-  regTake: /^FETCH$|^TAKE$|^GET$/,
+  regTake: /^FETCH$|^TAKE$|^GET$|^GRAB$/,
   regGive: /^LEND$|^GIVE$/,
   regDrop: /^THROW*$|^DROP$|^LEAVE$/,
   regKill: /^ATTACK$|^KILL$/,
@@ -91,12 +91,12 @@ async function savePlayers(){
   } else {
     if(isWaiting){
       //Already waiting, abort
-      console.log('Abort');
+      //console.log('Abort');
       return
     }
     //Starts waiting 5 seconds
     isWaiting = true;
-    console.log('Timeout set');
+    //console.log('Timeout set');
     setTimeout(savePlayers, 5000)
   }
 }
@@ -105,7 +105,7 @@ function loadPlayers(){
   try{
     players = JSON.parse(fs.readFileSync(playersFilePath))
   }catch(error){
-    console.log('No '+playersFilePath+' file loaded.');
+    console.log(`No ${playersFilePath} file loaded.`);
   }
 }
 
@@ -113,7 +113,7 @@ function loadMaps(){
   try{
     maps = JSON.parse(fs.readFileSync(mapsFilePath))
   }catch(error){
-    console.log('No '+mapsFilePath+' file loaded.');
+    console.log(`No ${mapsFilePath} file loaded.`);
   }
 }
 
@@ -137,22 +137,43 @@ function checkPlayerExist(user){
  * @returns A name object where the name or the aliases matches string
  **/
 function evaluateName(name, string){
-  string = string.toUpperCase()
-  if(name.name.toUpperCase() === string){
-    return name
-  }
-  //Function to test an alias
-  let testName = function(evaluatedName){
-    if(evaluatedName.toUpperCase() === string){
-      return true //The current name corresponds to the string
+  if(name && string){
+    string = string.toUpperCase()
+    if(name.name.toUpperCase() === string){
+      return name
     }
-  }
-  if (name.aliases.find(testName)){
-    return name
+    //Function to test an alias
+    let testName = function(evaluatedName){
+      if(evaluatedName.toUpperCase() === string){
+        return true //The current name corresponds to the string
+      }
+    }
+    if (name.aliases.find(testName)){
+      return name
+    }
   }
 }
 
-//Returns WorldMap object in the direction list
+function generateInteractionsListString(interactions){
+  var string
+  let i = 0
+  interactions.forEach(interaction => {
+    if(i === 0) {
+      string = 'You can see '
+    }else if(i >= interactions.length - 1) {
+      string += ' and '
+    }else {
+      string += ', '
+    }
+    string += interaction.name.name
+    i++
+  })
+  return string
+}
+
+/**
+ * @returns WorldMap object in the direction list
+ */
 function resolveMap(mapName, mapList){
   let findMap = function(evaluatedMap){
     var name = evaluateName(evaluatedMap.name, mapName)
@@ -165,7 +186,9 @@ function resolveMap(mapName, mapList){
   return map
 }
 
-//Returns Direction object in the direction list
+/**
+ * @returns Direction object in the direction list
+ */
 function resolveDirection(directionName, directionList){
   let findDirection = function(evaluatedDirection){
     var name = evaluateName(evaluatedDirection.name, directionName)
@@ -178,27 +201,53 @@ function resolveDirection(directionName, directionList){
   return direction
 }
 
-function travel(currentPlayer, parsedMessage, channel){
-  let i = 1
-  if(parsedMessage[i].toUpperCase() === 'TO'){
-    i++
+/**
+ * @param itemName string that should be used to try to match with names
+ * @param itemList list of anything that has a property name containing a name object
+ * @returns Namable object that the name corresponds to.
+ */
+function resolveNamable(itemName, itemList){
+  let findItem = function(evaluatedItem){
+    var name = evaluateName(evaluatedItem.name, itemName)
+    if(evaluatedItem.name === name){
+      return evaluatedItem
+    }
+    return false
   }
-  let direction = resolveDirection(parsedMessage[i],maps[currentPlayer.position].directions)
+  let item = itemList.find(findItem)
+  return item
+}
+
+function lookAround(currentPlayer, request, channel){
+  let item = resolveNamable(request, currentPlayer.inventory.items)
+  //If there's an item
+  if(item){
+      channel.send(item.description).catch(err => {console.log(err);})
+  }else{
+    let position = maps[currentPlayer.position]
+    let string = generateInteractionsListString(position.interactions)
+    channel.send(position.description+'\n'+string).catch(err => {console.log(err);})
+  }
+  //TODO: Remove grabbable that have been grabbed by the player
+  //TODO: Add descritions for the things that need a pass and the pass is owned by the player
+}
+
+function travel(currentPlayer, directionName, channel){
+  let direction = resolveNamable(directionName,maps[currentPlayer.position].directions)
   if(direction){
     currentPlayer.position = direction.map
-    channel.send(direction.description)
+    channel.send(direction.description).catch(err => {console.log(err);})
+    savePlayers()
   }
-  /*
-  let availableMaps = new Array()
-  maps[currentPlayer.position].directions.forEach(direction =>{
-    availableMaps.push(maps[direction.map])
-  })
-  var map = resolveMap(parsedMessage[i], availableMaps)
-//  console.log(resolveMap(parsedMessage[i]));
-  if(map){
-    currentPlayer.position = maps.indexOf(map)
-    channel.send(currentPlayer.name + ' moves to ' + map.name.name+' (index '+currentPlayer.position+' )') //Debug message
-  }*/
+}
+
+function pickUp(currentPlayer, grabbableName, channel){
+  let grabbable = resolveNamable(grabbableName,maps[currentPlayer.position].interactions.filter(interaction => interaction.type === 'grabbable'))
+  if(grabbable){
+    grabbable.items.forEach(item => currentPlayer.inventory.items.push(item))
+    channel.send(grabbable.description).catch(err => {console.log(err);})
+    savePlayers()
+  }
 }
 
 
@@ -240,14 +289,17 @@ client.on('message', function (message) {
         //Player was never seen before
         currentPlayer = new Classes.Player(message.member.displayName, message.author.id, message.guild)
         players.push(currentPlayer)
+        savePlayers()
       } else {
         //Player is already known.
         //Update last guild and username
         //console.log('Player already known');
-        currentPlayer.guild = message.guild
-        currentPlayer.name = message.member.displayName
+        if(currentPlayer.guild.id !== message.guild.id || currentPlayer.name !== message.member.displayName){
+          currentPlayer.guild = message.guild
+          currentPlayer.name = message.member.displayName
+          savePlayers()
+        }
       }
-      savePlayers()
       //console.log('Activity detected from '+currentPlayer.name)
 
     } else if (message.channel.type === 'dm') { //in a DM
@@ -256,41 +308,57 @@ client.on('message', function (message) {
 
     if (parsedMessage[0].toUpperCase().match(commands.regHelp)) {
       sendHelp(message.author)
-    }else if (parsedMessage[0].toUpperCase().match(commands.regGo)){
-      if(currentPlayer !== undefined){
-        travel(currentPlayer, parsedMessage, message.channel)
+    }
+    if(currentPlayer !== undefined){//The player needs to exist for any other command.
+      if (parsedMessage[0].toUpperCase().match(commands.regLook)){
+        let i = 1;
+        if(parsedMessage.length > 1){
+          if(parsedMessage[1].toUpperCase() !== 'AT'){
+            i++
+          }
+        }
+        lookAround(currentPlayer, parsedMessage[i], message.channel)
+      }else if (parsedMessage[0].toUpperCase().match(commands.regGo)){
+        let i = 1
+        if(parsedMessage[i].toUpperCase() === 'TO'){
+          i++
+        }
+        travel(currentPlayer, parsedMessage[i], message.channel)
+      }else if (parsedMessage[0].toUpperCase().match(commands.regBuy)){
       }
-    }else if (parsedMessage[0].toUpperCase().match(commands.regBuy)){
-    }
-    else if (parsedMessage[0].toUpperCase().match(commands.regSell)){
-    }
-    else if (parsedMessage[0].toUpperCase().match(commands.regFlee)){
-    }
-    else if (parsedMessage[0].toUpperCase().match(commands.regTake)){
-    }
-    else if (parsedMessage[0].toUpperCase().match(commands.regGive)){
-    }
-    else if (parsedMessage[0].toUpperCase().match(commands.regDrop)){
-    }
-    else if (parsedMessage[0].toUpperCase().match(commands.regKill)){
-    }
-    else if (parsedMessage[0].toUpperCase().match(commands.regSleep)){
-    }
-    else if (parsedMessage[0].toUpperCase().match(commands.regKeep)){
-    }
-    else if (parsedMessage[0].toUpperCase().match(commands.regBag)){
-    }
-    else if (parsedMessage[0].toUpperCase().match(commands.regLaugh)){
-    }
-    else if (parsedMessage[0].toUpperCase().match(commands.regTickle)){
-    }
-    else if (parsedMessage[0].toUpperCase().match(commands.regHug)){
-    }
-    else if (parsedMessage[0].toUpperCase().match(commands.regTell)){
-    }
-    else if (parsedMessage[0].toUpperCase().match(commands.regYell)){
-    }
-    else if (parsedMessage[0].toUpperCase().match(commands.regAct)){
+      else if (parsedMessage[0].toUpperCase().match(commands.regSell)){
+      }
+      else if (parsedMessage[0].toUpperCase().match(commands.regFlee)){
+      }
+      else if (parsedMessage[0].toUpperCase().match(commands.regTake)){
+        if(parsedMessage.length > 1){
+          pickUp(currentPlayer, parsedMessage[1], message.channel)
+        }
+      }
+      else if (parsedMessage[0].toUpperCase().match(commands.regGive)){
+      }
+      else if (parsedMessage[0].toUpperCase().match(commands.regDrop)){
+      }
+      else if (parsedMessage[0].toUpperCase().match(commands.regKill)){
+      }
+      else if (parsedMessage[0].toUpperCase().match(commands.regSleep)){
+      }
+      else if (parsedMessage[0].toUpperCase().match(commands.regKeep)){
+      }
+      else if (parsedMessage[0].toUpperCase().match(commands.regBag)){
+      }
+      else if (parsedMessage[0].toUpperCase().match(commands.regLaugh)){
+      }
+      else if (parsedMessage[0].toUpperCase().match(commands.regTickle)){
+      }
+      else if (parsedMessage[0].toUpperCase().match(commands.regHug)){
+      }
+      else if (parsedMessage[0].toUpperCase().match(commands.regTell)){
+      }
+      else if (parsedMessage[0].toUpperCase().match(commands.regYell)){
+      }
+      else if (parsedMessage[0].toUpperCase().match(commands.regAct)){
+      }
     }
   }
 })
