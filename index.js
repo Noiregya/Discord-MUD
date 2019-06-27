@@ -133,17 +133,36 @@ function checkPlayerExist(user){
   return players.find(testPlayer)
 }
 
+/**
+ * @returns A name object where the name or the aliases matches string
+ **/
 function evaluateName(name, string){
   string = string.toUpperCase()
   if(name.name.toUpperCase() === string){
-    return true
+    return name
   }
+  //Function to test an alias
   let testName = function(evaluatedName){
-    if(evaluateName.toUpperCase() === string){
-      return true
+    if(evaluatedName.toUpperCase() === string){
+      return true //The current name corresponds to the string
     }
   }
-  return name.aliases.find(testName)
+  if (name.aliases.find(testName)){
+    return name
+  }
+}
+
+//Returns WorldMap object
+function resolveMap(mapName){
+  let findMap = function(evaluatedMap){
+    var name = evaluateName(evaluatedMap.name, mapName)
+    if(evaluatedMap.name === name){
+      return evaluatedMap
+    }
+    return false
+  }
+  let map = maps.find(findMap)
+  return map
 }
 
 function travel(currentPlayer, parsedMessage, channel){
@@ -152,10 +171,11 @@ function travel(currentPlayer, parsedMessage, channel){
   if(parsedMessage[i].toUpperCase() === 'TO'){
     i++
   }
-  var parsed = parseInt(parsedMessage[i])
-  if(!isNaN(parsed) && parsed >= 0 && parsed < maps.length){
-    currentPlayer.position = parsed
-    channel.send(currentPlayer.name + ' moves to ' + maps[parsed].name.name) //Debug message
+  var map = resolveMap(parsedMessage[i])
+//  console.log(resolveMap(parsedMessage[i]));
+  if(map){
+    currentPlayer.position = maps.indexOf(map)
+    channel.send(currentPlayer.name + ' moves to ' + map.name.name+' (index '+currentPlayer.position+' )') //Debug message
   }
 }
 
@@ -164,13 +184,11 @@ function travel(currentPlayer, parsedMessage, channel){
 
 //on warnings
 client.on('warn', function (warning) {
-  //console.log(warning)
-  log.warn('Client.on', 'uncaught warning', warning)
+  console.log(warning)
 })
 //on errors
 client.on('error', function (error) {
-  //console.log(error)
-  log.error('Client.on', 'uncaught error', error)
+  console.log(error)
 })
 
 //Client initialisation
@@ -179,9 +197,6 @@ client.on('ready', function(){
 //Loading data
   loadPlayers()
   loadMaps()
-  console.log(players.length);
-  console.log(maps.length);
-  console.log(maps[2].description);
 //Ready
   console.log('Logged in as '+client.user.tag+'!')
   client.user.setActivity("Ask for help!",{ type: 'LISTENING' }).then(function(presence){
