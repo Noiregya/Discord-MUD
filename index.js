@@ -21,7 +21,7 @@ const commands = {
   regHelp: /^HELP$|^H$|^MANUAL$|^MAN$/,
   regBuy: /^PURCHASE$|^BUY$/,
   regSell: /^SELL$/,
-  regGo: /^GO$|^ENTER$|LEAVE TO$/,
+  regGo: /^GO$|^ENTER$|LEAVE$|^CROSS$|^TRAVEL$/,
   regFlee: /^FLEE$|^RUN$/,
   regLook: /^LOOK$|^WHERE$/,
   regTake: /^FETCH$|^TAKE$|^GET$/,
@@ -134,6 +134,29 @@ function checkPlayerExist(user){
   return players.find(testPlayer)
 }
 
+function evaluateName(name, string){
+  string = string.toUpperCase()
+  if(name.name.toUpperCase() === string){
+    return true
+  }
+  let testName = function(evaluatedName){
+    if(evaluateName.toUpperCase() === string){
+      return true
+    }
+  }
+  return name.aliases.find(testName)
+}
+
+function travel(currentPlayer, parsedMessage, channel){
+  //TODO: Replace placeholder.
+  let i = 1
+  if(parsedMessage[i].toUpperCase() === 'TO'){
+    i++
+  }
+  channel.send(currentPlayer.name + ' moves to ' + parsedMessage[i]) //Debug message
+}
+
+
 /* EVENTS */
 
 //on warnings
@@ -169,14 +192,10 @@ client.on('message', function (message) {
   //is the message from the bot itself?
   if (message.author.id === client.user.id) { return }
   else{
-    if (parsedMessage[0].toUpperCase().match(commands.regHelp)) {
-      sendHelp(message.author)
-    }
-
     //DM/Text channel check, might have to be used in command specific conditions too
-    if (message.channel.type === 'text') {
+    let currentPlayer = checkPlayerExist (message.author)
+    if (message.channel.type === 'text') {//In a public channel
       //Create contextual function checkplayer (needed for use with search)
-      let currentPlayer = checkPlayerExist (message.author)
       if(currentPlayer === undefined){
         //Player was never seen before
         currentPlayer = new Classes.Player(message.member.displayName, message.author.id, message.guild)
@@ -191,8 +210,47 @@ client.on('message', function (message) {
       savePlayers()
       console.log('Activity detected from '+currentPlayer.name)
 
-    } else if (message.channel.type === 'dm') {
+    } else if (message.channel.type === 'dm') { //in a DM
 
+    }
+
+    if (parsedMessage[0].toUpperCase().match(commands.regHelp)) {
+      sendHelp(message.author)
+    }else if (parsedMessage[0].toUpperCase().match(commands.regGo)){
+      if(currentPlayer !== undefined){
+        travel(currentPlayer, parsedMessage, message.channel)
+      }
+    }else if (parsedMessage[0].toUpperCase().match(commands.regBuy)){
+    }
+    else if (parsedMessage[0].toUpperCase().match(commands.regSell)){
+    }
+    else if (parsedMessage[0].toUpperCase().match(commands.regFlee)){
+    }
+    else if (parsedMessage[0].toUpperCase().match(commands.regTake)){
+    }
+    else if (parsedMessage[0].toUpperCase().match(commands.regGive)){
+    }
+    else if (parsedMessage[0].toUpperCase().match(commands.regDrop)){
+    }
+    else if (parsedMessage[0].toUpperCase().match(commands.regKill)){
+    }
+    else if (parsedMessage[0].toUpperCase().match(commands.regSleep)){
+    }
+    else if (parsedMessage[0].toUpperCase().match(commands.regKeep)){
+    }
+    else if (parsedMessage[0].toUpperCase().match(commands.regBag)){
+    }
+    else if (parsedMessage[0].toUpperCase().match(commands.regLaugh)){
+    }
+    else if (parsedMessage[0].toUpperCase().match(commands.regTickle)){
+    }
+    else if (parsedMessage[0].toUpperCase().match(commands.regHug)){
+    }
+    else if (parsedMessage[0].toUpperCase().match(commands.regTell)){
+    }
+    else if (parsedMessage[0].toUpperCase().match(commands.regYell)){
+    }
+    else if (parsedMessage[0].toUpperCase().match(commands.regAct)){
     }
   }
 })
