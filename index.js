@@ -313,7 +313,7 @@ client.on('message', function (message) {
       if (parsedMessage[0].toUpperCase().match(commands.regLook)){
         let i = 1;
         if(parsedMessage.length > 1){
-          if(parsedMessage[1].toUpperCase() !== 'AT'){
+          if(parsedMessage[1].toUpperCase() === 'AT'){
             i++
           }
         }
