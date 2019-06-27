@@ -87,7 +87,6 @@ async function savePlayers(){
     isWritingPlayer = true
     fs.writeFile(playersFilePath,JSON.stringify(players),function(){
       isWritingPlayer = false
-      console.log('Wrote');
     })
   } else {
     if(isWaiting){
@@ -153,7 +152,11 @@ function travel(currentPlayer, parsedMessage, channel){
   if(parsedMessage[i].toUpperCase() === 'TO'){
     i++
   }
-  channel.send(currentPlayer.name + ' moves to ' + parsedMessage[i]) //Debug message
+  var parsed = parseInt(parsedMessage[i])
+  if(!isNaN(parsed) && parsed >= 0 && parsed < maps.length){
+    currentPlayer.position = parsed
+    channel.send(currentPlayer.name + ' moves to ' + maps[parsed].name.name) //Debug message
+  }
 }
 
 
@@ -162,7 +165,7 @@ function travel(currentPlayer, parsedMessage, channel){
 //on warnings
 client.on('warn', function (warning) {
   //console.log(warning)
-  log.warn('Client.on', 'uncaught warning')
+  log.warn('Client.on', 'uncaught warning', warning)
 })
 //on errors
 client.on('error', function (error) {
@@ -254,6 +257,5 @@ client.on('message', function (message) {
     }
   }
 })
-
 
 client.login(token)

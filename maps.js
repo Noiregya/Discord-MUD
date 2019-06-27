@@ -79,8 +79,9 @@ let mapTwo = new Classes.WorldMap( //Declare a second map
         )])]
 )
 
-let mapThree = new Classes.WorldMap('The end forest',
-'You are in a lively forest, there\'s no signs of the dungeon you just escaped from. Congratulations, you won.')//A map with no interactions or directions
+let mapThree = new Classes.WorldMap(
+  new Classes.Name('The end forest'),
+  'You are in a lively forest, there\'s no signs of the dungeon you just escaped from. Congratulations, you won.')//A map with no interactions or directions
 
 maps.push(mapOne)
 maps.push(mapTwo)
