@@ -152,7 +152,7 @@ function evaluateName(name, string){
   }
 }
 
-//Returns WorldMap object in the map pool
+//Returns WorldMap object in the direction list
 function resolveMap(mapName, mapList){
   let findMap = function(evaluatedMap){
     var name = evaluateName(evaluatedMap.name, mapName)
@@ -165,12 +165,31 @@ function resolveMap(mapName, mapList){
   return map
 }
 
+//Returns Direction object in the direction list
+function resolveDirection(directionName, directionList){
+  let findDirection = function(evaluatedDirection){
+    var name = evaluateName(evaluatedDirection.name, directionName)
+    if(evaluatedDirection.name === name){
+      return evaluatedDirection
+    }
+    return false
+  }
+  let direction = directionList.find(findDirection)
+  return direction
+}
+
 function travel(currentPlayer, parsedMessage, channel){
   let i = 1
   if(parsedMessage[i].toUpperCase() === 'TO'){
     i++
   }
-  let availableMaps = new Array
+  let direction = resolveDirection(parsedMessage[i],maps[currentPlayer.position].directions)
+  if(direction){
+    currentPlayer.position = direction.map
+    channel.send(direction.description)
+  }
+  /*
+  let availableMaps = new Array()
   maps[currentPlayer.position].directions.forEach(direction =>{
     availableMaps.push(maps[direction.map])
   })
@@ -179,7 +198,7 @@ function travel(currentPlayer, parsedMessage, channel){
   if(map){
     currentPlayer.position = maps.indexOf(map)
     channel.send(currentPlayer.name + ' moves to ' + map.name.name+' (index '+currentPlayer.position+' )') //Debug message
-  }
+  }*/
 }
 
 
