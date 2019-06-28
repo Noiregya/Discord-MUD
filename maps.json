@@ -15,105 +15,10 @@
 				  "open door"
                ]
             },
-            "map":6
+            "map":1
          }
       ]
    },
-   {
-      "description":"The cell is very narrow. In-front of you is a rusted barred door.",
-      "name":{
-			"name":"West Prison Cell"
-      },
-      "directions":[
-         {
-            "description":"You've exited the prison cell.",
-            "name":{
-               "name":"Prison Room",
-               "aliases":[
-                  "exit",
-				  "open door"
-               ]
-            },
-            "map":6
-         }
-      ]
-   },
-   {
-      "description":"The cell is very narrow. In-front of you is a rusted barred door.",
-      "name":{
-			"name":"South-West Prison Cell"
-      },
-      "directions":[
-         {
-            "description":"You've exited the prison cell.",
-            "name":{
-               "name":"Prison Room",
-               "aliases":[
-                  "exit",
-				  "open door"
-               ]
-            },
-            "map":6
-         }
-      ]
-   },
-   {
-      "description":"The cell is very narrow. In-front of you is a rusted barred door.",
-      "name":{
-			"name":"North-East Prison Cell"
-      },
-      "directions":[
-         {
-            "description":"You've exited the prison cell.",
-            "name":{
-               "name":"Prison Room",
-               "aliases":[
-                  "exit",
-				  "open door"
-               ]
-            },
-            "map":6
-         }
-      ]
-   },
-   {
-      "description":"The cell is very narrow. In-front of you is a rusted barred door.",
-      "name":{
-			"name":"East Prison Cell"
-      },
-      "directions":[
-         {
-            "description":"You've exited the prison cell.",
-            "name":{
-               "name":"Prison Room",
-               "aliases":[
-                  "exit",
-				  "open door"
-               ]
-            },
-            "map":6
-         }
-      ]
-   },
-   {
-      "description":"The cell is very narrow. In-front of you is a rusted barred door.",
-      "name":{
-			"name":"South-East Prison Cell"
-      },
-      "directions":[
-         {
-            "description":"You've exited the prison cell.",
-            "name":{
-               "name":"Prison Room",
-               "aliases":[
-                  "exit",
-				  "open door"
-               ]
-            },
-            "map":6
-         }
-      ]
-   },   
    {
       "description":"There are six prison cells in total (North-East, East, South-East, South-West, West and North-West.) There is light peering from a doorway on the south side of the room.",
       "name":{
@@ -135,59 +40,6 @@
             "map":0
          },
          {
-            "description":"You have entered the West Prison Cell.",
-            "name":{
-               "name":"West Prison Cell",
-               "aliases":[
-                  "west"
-               ]
-            },
-            "map":1
-         },
-         {
-            "description":"You have entered the South-West Prison Cell.",
-            "name":{
-               "name":"South-West Prison Cell",
-               "aliases":[
-                  "south west",
-				  "south-west"
-               ]
-            },
-            "map":2
-         },
-         {
-            "description":"You have entered the North-East Prison Cell.",
-            "name":{
-               "name":"North-East Prison Cell",
-               "aliases":[
-                  "north east",
-				  "north-east"
-               ]
-            },
-            "map":3
-         },
-         {
-            "description":"You have entered the East Prison Cell.",
-            "name":{
-               "name":"East Prison Cell",
-               "aliases":[
-                  "east"
-               ]
-            },
-            "map":4
-         },
-         {
-            "description":"You have entered the South-East Prison Cell.",
-            "name":{
-               "name":"South-East Prison Cell",
-               "aliases":[
-                  "south east",
-				  "south-east"
-               ]
-            },
-            "map":5
-         },
-         {
             "description":"You have entered the Training Room.",
             "name":{
                "name":"Training Room",
@@ -196,7 +48,7 @@
 				  "training room"
                ]
             },
-            "map":7
+            "map":2
          }		 					 
       ],
       "interactions":[
@@ -242,7 +94,7 @@
                   "back"
                ]
             },
-            "map":6
+            "map":1
          },
          {
             "description":"You have entered the Hallway.",
@@ -253,7 +105,7 @@
 				  "hallway"
                ]
             },
-            "map":8
+            "map":3
          }
       ],
       "interactions":[
@@ -273,7 +125,7 @@
                   "alchemy lab"
                ]
             },
-            "map":9
+            "map":4
          },
          {
             "description":"You have entered the End Forest and escaped the dungeon. Congratulations!",
@@ -285,7 +137,7 @@
 				  "end forest"
                ]
             },
-            "map":12
+            "map":7
          },
          {
             "description":"You have entered the Pantry.",
@@ -296,7 +148,7 @@
                   "pantry"
                ]
             },
-            "map":10
+            "map":5
          },
          {
             "description":"You have entered the Training Room.",
@@ -307,7 +159,7 @@
                   "training room"
                ]
             },
-            "map":7
+            "map":2
          }				 
       ],
       "interactions":[
@@ -327,7 +179,7 @@
                   "hidden room"
                ]
             },
-            "map":11
+            "map":6
          },
          {
             "description":"You have entered the Hallway.",
@@ -338,7 +190,7 @@
                   "hallway"
                ]
             },
-            "map":8
+            "map":3
          }		 
       ],
       "interactions":[
@@ -359,7 +211,7 @@
                   "back"
                ]
             },
-            "map":8
+            "map":3
          }
       ],
       "interactions":[
@@ -380,7 +232,7 @@
                   "back"
                ]
             },
-            "map":9
+            "map":4
          }
       ],
       "interactions":[
