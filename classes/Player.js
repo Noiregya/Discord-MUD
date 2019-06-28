@@ -13,11 +13,12 @@ class Player {
   constructor (name, id, guild) {
     this.id = id
     this.name = name
-    this.guild = guild
     this.position = 0
     this.inventory = new Inventory()
     this.activeQuests = new Array()
+    this.interactionsDone = new Array()
     this.passes = new Array()
+    this.guild = guild
   }
 
 }

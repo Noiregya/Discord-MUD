@@ -24,7 +24,7 @@ const commands = {
   regGo: /^GO$|^ENTER$|^CROSS$|^TRAVEL$|^WALK$/,
   regFlee: /^FLEE$|^RUN$/,
   regLook: /^LOOK$|^WHERE$/,
-  regTake: /^FETCH$|^TAKE$|^GET$|^GRAB$/,
+  regTake: /^FETCH$|^TAKE$|^GET$|^GRAB$|^PICK$/,
   regGive: /^LEND$|^GIVE$/,
   regDrop: /^THROW$|^DROP$|^LEAVE$/,
   regKill: /^ATTACK$|^KILL$/,
@@ -250,7 +250,14 @@ function lookAround(currentPlayer, request, channel){
   }else{
     let position = maps[currentPlayer.position]
     if(position){
-      let availableInteractions = generateInteractionsListString(position.interactions)
+
+      let availableInteractions = generateInteractionsListString(position.interactions.filter(interaction => {
+        console.log(currentPlayer.interactionsDone);
+        console.log('Includes?');
+        console.log(interaction.name);
+        console.log(currentPlayer.interactionsDone[0] === interaction.name.name);
+        return !currentPlayer.interactionsDone.includes(interaction.name.name)
+      }))
       let nearbyPlayers = generateWhoString(who(currentPlayer, channel))
       channel.send(position.description+'\n'+availableInteractions+'\n'+nearbyPlayers).catch(err => {console.log(err);})
     }else{
@@ -259,7 +266,6 @@ function lookAround(currentPlayer, request, channel){
     }
 
   }
-  //TODO: Remove grabbable that have been grabbed by the player
   //TODO: Add descritions for the things that need a pass and the pass is owned by the player
 }
 
@@ -275,7 +281,8 @@ function travel(currentPlayer, directionName, channel){
 
 function pickUp(currentPlayer, grabbableName, channel){
   let grabbable = resolveNamable(grabbableName,maps[currentPlayer.position].interactions.filter(interaction => interaction.type === 'grabbable'))
-  if(grabbable){
+  if(grabbable && !currentPlayer.interactionsDone.includes(grabbable.name.name)){
+    currentPlayer.interactionsDone.push(grabbable.name.name)
     grabbable.items.forEach(item => currentPlayer.inventory.items.push(item))
     channel.send(grabbable.description).catch(err => {console.log(err);})
     savePlayers()
@@ -365,8 +372,12 @@ client.on('message', function (message) {
       else if (parsedMessage[0].toUpperCase().match(commands.regFlee)){
       }
       else if (parsedMessage[0].toUpperCase().match(commands.regTake)){
+        let i = 1
         if(parsedMessage.length > 1){
-          pickUp(currentPlayer, parsedMessage[1], message.channel)
+          if(parsedMessage.length > 2 && parsedMessage[i].toUpperCase() === 'UP'){
+            i++
+          }
+          pickUp(currentPlayer, parsedMessage[i], message.channel)
         }
       }
       else if (parsedMessage[0].toUpperCase().match(commands.regGive)){
