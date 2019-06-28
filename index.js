@@ -158,7 +158,7 @@ function evaluateName(name, string){
 function generateInteractionsListString(interactions){
   var string
   let i = 0
-  if(interactions){
+  if(interactions.length > 0){
     interactions.forEach(interaction => {
       if(i === 0) {
         string = 'You can see '
@@ -170,7 +170,7 @@ function generateInteractionsListString(interactions){
       string += interaction.name.name
       i++
     })
-    return string
+    return string+'.'
   }
   return 'There seems to be nothing to interact with.'
 }
@@ -188,7 +188,7 @@ function resolveNamable(itemName, itemList){
         return evaluatedItem
       }
     } else {
-      console.log(`You\'re trying to evaluate a non-namable object, check that the property name on all your objects is a Name class in`)
+      console.log(`You\'re trying to evaluate a non-namable object, check that the property name on all your objects is a Name class in `)
       console.log(evaluatedItem)
     }
     return false
@@ -253,17 +253,19 @@ function lookAround(currentPlayer, request, channel){
     if(position){
       let availableInteractions =''
       if(position.interactions){
-        let availableInteractions = generateInteractionsListString(position.interactions.filter(interaction => {
+        availableInteractions = generateInteractionsListString(position.interactions.filter(interaction => {
           return !currentPlayer.interactionsDone.includes(interaction.name.name)
         }))
       }
-      console.log(position.interactions);
+      let itemList =''
       if(maps[currentPlayer.position].userItems.length > 0){
-        let itemList = 'Other items on the ground:\n'
-          maps[currentPlayer.position].userItems.forEach(currentItem => itemList+=`${currentItem.name.name}\n`)
+        itemList = 'Other items on the ground:\n'
+          maps[currentPlayer.position].userItems.forEach(currentItem => {
+            itemList+=`${currentItem.name.name}\n`
+          })
       }
       let nearbyPlayers = generateWhoString(who(currentPlayer, channel))
-      channel.send(position.description+'\n'+availableInteractions+'\n'+nearbyPlayers).catch(err => {console.log(err);})
+      channel.send(position.description+'\n'+availableInteractions+'\n'+nearbyPlayers+'\n'+itemList).catch(err => {console.log(err);})
     }else{
       console.log('Current position '+currentPlayer.position);
         console.log(maps);
@@ -274,6 +276,7 @@ function lookAround(currentPlayer, request, channel){
 }
 
 function travel(currentPlayer, directionName, channel){
+  //console.log(maps[currentPlayer.position].directions);
   let direction = resolveNamable(directionName,maps[currentPlayer.position].directions)
   if(direction){
     currentPlayer.position = direction.map
@@ -284,12 +287,21 @@ function travel(currentPlayer, directionName, channel){
 }
 
 function pickUp(currentPlayer, grabbableName, channel){
-  let grabbable = resolveNamable(grabbableName,maps[currentPlayer.position].interactions.filter(interaction => interaction.type === 'grabbable'))
-  if(grabbable && !currentPlayer.interactionsDone.includes(grabbable.name.name)){
+  let item = resolveNamable(grabbableName, maps[currentPlayer.position].userItems)
+  let grabbable = resolveNamable(grabbableName,maps[currentPlayer.position].interactions
+    .filter(interaction => {
+      interaction.type === 'grabbable' && !currentPlayer.interactionsDone.includes(interaction.name.name)
+    }))
+    if(grabbable && !currentPlayer.interactionsDone.includes(grabbable.name.name)){
     currentPlayer.interactionsDone.push(grabbable.name.name)
     grabbable.items.forEach(item => currentPlayer.inventory.items.push(item))
     channel.send(grabbable.description).catch(err => {console.log(err);})
     savePlayers()
+  } else if (item){
+      currentPlayer.inventory.items.push(item)
+      maps[currentPlayer.position].userItems = maps[currentPlayer.position].userItems.filter(
+        currentItem => currentItem !== item)
+      channel.send(`Added ${item.name.name} to your inventory.`).catch(err => {console.log(err);})
   }
 }
 
@@ -298,8 +310,8 @@ function drop(currentPlayer, itemName, channel){
   if(item){
     currentPlayer.inventory.items = currentPlayer.inventory.items.filter(
       currentItem => currentItem !== item)
-      console.log(currentPlayer.inventory.items);
     maps[currentPlayer.position].userItems.push(item)
+    channel.send(`Item ${item.name.name} dropped.`).catch(err => {console.log(err);})
   }
 }
 
