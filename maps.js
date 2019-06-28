@@ -24,8 +24,8 @@ let mapTwo = new Classes.WorldMap(
         new Classes.Name('North-West Prison Cell', ['north-west', 'north west']),
         'You have entered the North-West Prison Cell.',
         0
-    ),
-	(
+    )],
+	[new Classes.Direction(
         new Classes.Name('Training Room', ['south']),
         'You have entered the Training Room.',
         2
@@ -49,8 +49,8 @@ let mapThree = new Classes.WorldMap(
         new Classes.Name('Prison Room', ['north']),
         'You have entered the Prison Room.',
         1
-    ),
-	(
+    )],
+	[new Classes.Direction(
         new Classes.Name('Hallway', ['east']),
         'You have entered the Hallway.',
         3
@@ -64,18 +64,18 @@ let mapFour = new Classes.WorldMap(
         new Classes.Name('Training Room', ['west']),
         'You have entered the Training Room.',
         2
-    ),
-	( 
+    )],
+	[new Classes.Direction( 
         new Classes.Name('Alchemy Lab', ['north']),
         'You have entered the Alchemy Lab.',
         4
-    ),
-	( 
+    )],
+	[new Classes.Direction( 
         new Classes.Name('Pantry', ['south']),
         'You have entered the Pantry.',
         5
-	),
-	( 
+	)],
+	[new Classes.Direction( 
         new Classes.Name('End Forest', ['east']),
         'You have entered the End Forest and escaped the dungeon. Congratulations!',
         7
@@ -89,8 +89,8 @@ let mapFive = new Classes.WorldMap(
         new Classes.Name('Hallway', ['south']),
         'You have entered the Hallway.',
         3
-    ),
-	( 
+    )],
+	[new Classes.Direction( 
         new Classes.Name('Hidden Room', ['East']),
         'You have entered the Hidden Room.',
         6
