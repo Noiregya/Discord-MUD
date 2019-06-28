@@ -290,7 +290,7 @@ function pickUp(currentPlayer, grabbableName, channel){
   let item = resolveNamable(grabbableName, maps[currentPlayer.position].userItems)
   let grabbable = resolveNamable(grabbableName,maps[currentPlayer.position].interactions
     .filter(interaction => {
-      interaction.type === 'grabbable' && !currentPlayer.interactionsDone.includes(interaction.name.name)
+      return interaction.type === 'grabbable' && !currentPlayer.interactionsDone.includes(interaction.name.name)
     }))
     if(grabbable && !currentPlayer.interactionsDone.includes(grabbable.name.name)){
     currentPlayer.interactionsDone.push(grabbable.name.name)
@@ -341,107 +341,110 @@ client.on('ready', function(){
   })
 })
 client.on('message', function (message) {
-  // parse the message
-  let parsedMessage = parseMessage(message.content)
-  //is the message from the bot itself?
-  if (message.author.id === client.user.id) { return }
-  else{
-    //DM/Text channel check, might have to be used in command specific conditions too
-    let currentPlayer = checkPlayerExist (message.author)
-    if (message.channel.type === 'text') {//In a public channel
-      //Create contextual function checkplayer (needed for use with search)
-      if(currentPlayer === undefined){
-        //Player was never seen before
-        currentPlayer = new Classes.Player(message.member.displayName, message.author.id, message.guild)
-        players.push(currentPlayer)
-        savePlayers()
-      } else {
-        //Player is already known.
-        //Update last guild and username
-        //console.log('Player already known');
-        if(currentPlayer.guild.id !== message.guild.id || currentPlayer.name !== message.member.displayName){
-          currentPlayer.guild = message.guild
-          currentPlayer.name = message.member.displayName
+  if(message.content){
+    // parse the message
+    let parsedMessage = parseMessage(message.content)
+    //is the message from the bot itself?
+    if (message.author.id === client.user.id) { return }
+    else{
+      //DM/Text channel check, might have to be used in command specific conditions too
+      let currentPlayer = checkPlayerExist (message.author)
+      if (message.channel.type === 'text') {//In a public channel
+        //Create contextual function checkplayer (needed for use with search)
+        if(currentPlayer === undefined){
+          //Player was never seen before
+          currentPlayer = new Classes.Player(message.member.displayName, message.author.id, message.guild)
+          players.push(currentPlayer)
           savePlayers()
+        } else {
+          //Player is already known.
+          //Update last guild and username
+          //console.log('Player already known');
+          if(currentPlayer.guild.id !== message.guild.id || currentPlayer.name !== message.member.displayName){
+            currentPlayer.guild = message.guild
+            currentPlayer.name = message.member.displayName
+            savePlayers()
+          }
         }
-      }
-      //console.log('Activity detected from '+currentPlayer.name)
+        //console.log('Activity detected from '+currentPlayer.name)
 
-    } else if (message.channel.type === 'dm') { //in a DM
+      } else if (message.channel.type === 'dm') { //in a DM
 
-    }
+      }
 
-    if (parsedMessage[0].toUpperCase().match(commands.regHelp)) {
-      sendHelp(message.author)
-    }
-    if(currentPlayer !== undefined){//The player needs to exist for any other command.
-      if (parsedMessage[0].toUpperCase().match(commands.regLook)){
-        let i = 1;
-        if(parsedMessage.length > 1){
-          if(parsedMessage.length > 2 && parsedMessage[1].toUpperCase() === 'AT'){
-            i++
+      if (parsedMessage[0].toUpperCase().match(commands.regHelp)) {
+        sendHelp(message.author)
+      }
+      if(currentPlayer !== undefined){//The player needs to exist for any other command.
+        if (parsedMessage[0].toUpperCase().match(commands.regLook)){
+          let i = 1;
+          if(parsedMessage.length > 1){
+            if(parsedMessage.length > 2 && parsedMessage[1].toUpperCase() === 'AT'){
+              i++
+            }
+          }
+          lookAround(currentPlayer, parsedMessage[i], message.channel)
+        }else if (parsedMessage[0].toUpperCase().match(commands.regGo)){
+          let i = 1
+          if(parsedMessage.length > 1){
+            if(parsedMessage.length > 2 && parsedMessage[i].toUpperCase() === 'TO'){
+              i++
+            }
+            travel(currentPlayer, parsedMessage[i], message.channel)
+          }
+        }else if (parsedMessage[0].toUpperCase().match(commands.regBuy)){
+        }
+        else if (parsedMessage[0].toUpperCase().match(commands.regSell)){
+        }
+        else if (parsedMessage[0].toUpperCase().match(commands.regFlee)){
+        }
+        else if (parsedMessage[0].toUpperCase().match(commands.regTake)){
+          let i = 1
+          if(parsedMessage.length > 1){
+            if(parsedMessage.length > 2 && parsedMessage[i].toUpperCase() === 'UP'){
+              i++
+            }
+            pickUp(currentPlayer, parsedMessage[i], message.channel)
           }
         }
-        lookAround(currentPlayer, parsedMessage[i], message.channel)
-      }else if (parsedMessage[0].toUpperCase().match(commands.regGo)){
-        let i = 1
-        if(parsedMessage.length > 1){
-          if(parsedMessage.length > 2 && parsedMessage[i].toUpperCase() === 'TO'){
-            i++
+        else if (parsedMessage[0].toUpperCase().match(commands.regGive)){
+        }
+        else if (parsedMessage[0].toUpperCase().match(commands.regDrop)){
+          if(parsedMessage.length > 1){
+              drop(currentPlayer, parsedMessage[1], message.channel)
           }
-          travel(currentPlayer, parsedMessage[i], message.channel)
         }
-      }else if (parsedMessage[0].toUpperCase().match(commands.regBuy)){
-      }
-      else if (parsedMessage[0].toUpperCase().match(commands.regSell)){
-      }
-      else if (parsedMessage[0].toUpperCase().match(commands.regFlee)){
-      }
-      else if (parsedMessage[0].toUpperCase().match(commands.regTake)){
-        let i = 1
-        if(parsedMessage.length > 1){
-          if(parsedMessage.length > 2 && parsedMessage[i].toUpperCase() === 'UP'){
-            i++
+        else if (parsedMessage[0].toUpperCase().match(commands.regKill)){
+        }
+        else if (parsedMessage[0].toUpperCase().match(commands.regSleep)){
+        }
+        else if (parsedMessage[0].toUpperCase().match(commands.regInteract)){
+          let i = 1
+          if(parsedMessage.length > 1){
+            if(parsedMessage.length > 2 && parsedMessage[i].toUpperCase() === 'WITH'){
+              i++
+            }
+            interact(currentPlayer, parsedMessage[i])
           }
-          pickUp(currentPlayer, parsedMessage[i], message.channel)
         }
-      }
-      else if (parsedMessage[0].toUpperCase().match(commands.regGive)){
-      }
-      else if (parsedMessage[0].toUpperCase().match(commands.regDrop)){
-        if(parsedMessage.length > 1){
-            drop(currentPlayer, parsedMessage[1], message.channel)
+        else if (parsedMessage[0].toUpperCase().match(commands.regBag)){
         }
-      }
-      else if (parsedMessage[0].toUpperCase().match(commands.regKill)){
-      }
-      else if (parsedMessage[0].toUpperCase().match(commands.regSleep)){
-      }
-      else if (parsedMessage[0].toUpperCase().match(commands.regInteract)){
-        let i = 1
-        if(parsedMessage.length > 1){
-          if(parsedMessage.length > 2 && parsedMessage[i].toUpperCase() === 'WITH'){
-            i++
-          }
-          interact(currentPlayer, parsedMessage[i])
+        else if (parsedMessage[0].toUpperCase().match(commands.regLaugh)){
         }
-      }
-      else if (parsedMessage[0].toUpperCase().match(commands.regBag)){
-      }
-      else if (parsedMessage[0].toUpperCase().match(commands.regLaugh)){
-      }
-      else if (parsedMessage[0].toUpperCase().match(commands.regTickle)){
-      }
-      else if (parsedMessage[0].toUpperCase().match(commands.regHug)){
-      }
-      else if (parsedMessage[0].toUpperCase().match(commands.regTell)){
-      }
-      else if (parsedMessage[0].toUpperCase().match(commands.regYell)){
-      }
-      else if (parsedMessage[0].toUpperCase().match(commands.regAct)){
+        else if (parsedMessage[0].toUpperCase().match(commands.regTickle)){
+        }
+        else if (parsedMessage[0].toUpperCase().match(commands.regHug)){
+        }
+        else if (parsedMessage[0].toUpperCase().match(commands.regTell)){
+        }
+        else if (parsedMessage[0].toUpperCase().match(commands.regYell)){
+        }
+        else if (parsedMessage[0].toUpperCase().match(commands.regAct)){
+        }
       }
     }
   }
+
 })
 
 client.login(token)

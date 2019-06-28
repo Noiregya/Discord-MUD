@@ -19,10 +19,10 @@
       ],
       "interactions":[
 
-      ]	  
+      ]
    },
    {
-      "description":"You are in the prison room. There is a prison cell at the North-East. There is light peering from a doorway on the south side of the room.",
+      "description":"You are in the prison room. There is a prison cell at the North-West. There is light peering from a doorway on the south side of the room.",
       "name":{
          "name":"Prison Room",
          "aliases":[
@@ -51,7 +51,7 @@
                ]
             },
             "map":2
-         }		 					 
+         }
       ],
       "interactions":[
          {
@@ -113,7 +113,7 @@
       "interactions":[
 
       ]
-   },   
+   },
    {
       "description":"You are in the dungeon hallway. There is a North doorway that leads to an Alchemy Lab. The dungeon's exit gate is located East down the hallway. There is also a South doorway that leads to a Pantry. The west doorway leads back to the Training Room.",
       "name":"Hallway",
@@ -162,7 +162,7 @@
                ]
             },
             "map":2
-         }				 
+         }
       ],
       "interactions":[
 
@@ -193,7 +193,7 @@
                ]
             },
             "map":3
-         }		 
+         }
       ],
       "interactions":[
 
@@ -240,7 +240,7 @@
       "interactions":[
 
       ]
-   },      
+   },
    {
       "description":"You are in a lively forest, there's no signs of the dungeon you just escaped from. Congratulations, you won.",
       "name":"The End Forest",
