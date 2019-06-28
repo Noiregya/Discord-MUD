@@ -13,13 +13,13 @@ let mapOne = new Classes.WorldMap( //Declare a first map
     [new Classes.Direction( //A first direction
         new Classes.Name('Prison Room', ['exit', 'door']), //The name and aliases of the direction
         'You have exited the prison cell.', //Text that describe the description
-        6//Index of the map the direction leads to
+        1//Index of the map the direction leads to
     )]
 )
 
 let mapTwo = new Classes.WorldMap( 
     new Classes.Name('Prison Room', ['north', 'exit', 'door']),
-    'There are six prison cells in total (North-East, East, South-East, South-West, West and North-West.) There is light peering from a doorway on the south side of the room.',
+    'You are in the prison room. There is a prison cell at the North-East. There is light peering from a doorway on the south side of the room.',
     [new Classes.Direction(
         new Classes.Name('North-West Prison Cell', ['north-west', 'north west']),
         'You have entered the North-West Prison Cell.',
@@ -28,7 +28,7 @@ let mapTwo = new Classes.WorldMap(
 	(
         new Classes.Name('Training Room', ['south']),
         'You have entered the Training Room.',
-        1
+        2
     )],
     [new Classes.Grabbable(
         new Classes.Name('a set of keys on the ground.', ['keys', 'key']),
