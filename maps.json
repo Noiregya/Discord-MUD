@@ -19,7 +19,7 @@
       ]
    },
    {
-      "description":"There are six prison cells in total (North-East, East, South-East, South-West, West and North-West.) There is light peering from a doorway on the south side of the room.",
+      "description":"You are in the prison room. There is a prison cell at the North-East. There is light peering from a doorway on the south side of the room.",
       "name":{
          "name":"Prison Room",
          "aliases":[
