@@ -57,7 +57,7 @@
          {
             "description":"You picked up the keys.",
             "name":{
-               "name":"A set of keys on the ground.",
+               "name":"A set of keys on the ground",
                "aliases":[
                   "keys",
                   "key"
