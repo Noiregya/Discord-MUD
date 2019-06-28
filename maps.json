@@ -16,7 +16,10 @@
             },
             "map":1
          }
-      ]
+      ],
+      "interactions":[
+
+      ]	  
    },
    {
       "description":"You are in the prison room. There is a prison cell at the North-East. There is light peering from a doorway on the south side of the room.",
