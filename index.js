@@ -112,6 +112,7 @@ function loadPlayers(){
 function loadMaps(){
   try{
     maps = JSON.parse(fs.readFileSync(mapsFilePath))
+    maps.forEach(map => map.userItems = new Array())
   }catch(error){
     console.log(`No ${mapsFilePath} file loaded.`);
   }
@@ -250,14 +251,17 @@ function lookAround(currentPlayer, request, channel){
   }else{
     let position = maps[currentPlayer.position]
     if(position){
-
-      let availableInteractions = generateInteractionsListString(position.interactions.filter(interaction => {
-        console.log(currentPlayer.interactionsDone);
-        console.log('Includes?');
-        console.log(interaction.name);
-        console.log(currentPlayer.interactionsDone[0] === interaction.name.name);
-        return !currentPlayer.interactionsDone.includes(interaction.name.name)
-      }))
+      let availableInteractions =''
+      if(position.interactions){
+        let availableInteractions = generateInteractionsListString(position.interactions.filter(interaction => {
+          return !currentPlayer.interactionsDone.includes(interaction.name.name)
+        }))
+      }
+      console.log(position.interactions);
+      if(maps[currentPlayer.position].userItems.length > 0){
+        let itemList = 'Other items on the ground:\n'
+          maps[currentPlayer.position].userItems.forEach(currentItem => itemList+=`${currentItem.name.name}\n`)
+      }
       let nearbyPlayers = generateWhoString(who(currentPlayer, channel))
       channel.send(position.description+'\n'+availableInteractions+'\n'+nearbyPlayers).catch(err => {console.log(err);})
     }else{
@@ -286,6 +290,16 @@ function pickUp(currentPlayer, grabbableName, channel){
     grabbable.items.forEach(item => currentPlayer.inventory.items.push(item))
     channel.send(grabbable.description).catch(err => {console.log(err);})
     savePlayers()
+  }
+}
+
+function drop(currentPlayer, itemName, channel){
+  let item = resolveNamable(itemName, currentPlayer.inventory.items)
+  if(item){
+    currentPlayer.inventory.items = currentPlayer.inventory.items.filter(
+      currentItem => currentItem !== item)
+      console.log(currentPlayer.inventory.items);
+    maps[currentPlayer.position].userItems.push(item)
   }
 }
 
@@ -383,6 +397,9 @@ client.on('message', function (message) {
       else if (parsedMessage[0].toUpperCase().match(commands.regGive)){
       }
       else if (parsedMessage[0].toUpperCase().match(commands.regDrop)){
+        if(parsedMessage.length > 1){
+            drop(currentPlayer, parsedMessage[1], message.channel)
+        }
       }
       else if (parsedMessage[0].toUpperCase().match(commands.regKill)){
       }

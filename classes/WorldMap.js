@@ -24,6 +24,7 @@ class WorldMap {
     } else {
       this.interactions = interactions
     }
+    this.userItems = new Array() //List of items users can drop, dissapear when the bot is rebooted.
   }
 }
 module.exports = WorldMap
