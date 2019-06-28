@@ -157,48 +157,21 @@ function evaluateName(name, string){
 function generateInteractionsListString(interactions){
   var string
   let i = 0
-  interactions.forEach(interaction => {
-    if(i === 0) {
-      string = 'You can see '
-    }else if(i >= interactions.length - 1) {
-      string += ' and '
-    }else {
-      string += ', '
-    }
-    string += interaction.name.name
-    i++
-  })
-  return string
-}
-
-/**
- * @returns WorldMap object in the direction list
- */
-function resolveMap(mapName, mapList){
-  let findMap = function(evaluatedMap){
-    var name = evaluateName(evaluatedMap.name, mapName)
-    if(evaluatedMap.name === name){
-      return evaluatedMap
-    }
-    return false
+  if(interactions){
+    interactions.forEach(interaction => {
+      if(i === 0) {
+        string = 'You can see '
+      }else if(i >= interactions.length - 1) {
+        string += ' and '
+      }else {
+        string += ', '
+      }
+      string += interaction.name.name
+      i++
+    })
+    return string
   }
-  let map = mapList.find(findMap)
-  return map
-}
-
-/**
- * @returns Direction object in the direction list
- */
-function resolveDirection(directionName, directionList){
-  let findDirection = function(evaluatedDirection){
-    var name = evaluateName(evaluatedDirection.name, directionName)
-    if(evaluatedDirection.name === name){
-      return evaluatedDirection
-    }
-    return false
-  }
-  let direction = directionList.find(findDirection)
-  return direction
+  return 'There seems to be nothing to interact with.'
 }
 
 /**
@@ -208,9 +181,14 @@ function resolveDirection(directionName, directionList){
  */
 function resolveNamable(itemName, itemList){
   let findItem = function(evaluatedItem){
-    var name = evaluateName(evaluatedItem.name, itemName)
-    if(evaluatedItem.name === name){
-      return evaluatedItem
+    if(evaluatedItem && evaluatedItem.name){
+      var name = evaluateName(evaluatedItem.name, itemName)
+      if(evaluatedItem.name === name){
+        return evaluatedItem
+      }
+    } else {
+      console.log(`You\'re trying to evaluate a non-namable object, check that the property name on all your objects is a Name class in`)
+      console.log(evaluatedItem)
     }
     return false
   }
