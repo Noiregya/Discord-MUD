@@ -5,13 +5,21 @@
 			"name":"North-West Prison Cell"
       },
       "directions":[
+<<<<<<< HEAD
+         null,
+=======
+>>>>>>> 7db3582251b454806fea833d491b0cf56da9a318
          {
             "description":"You've exited the prison cell.",
             "name":{
                "name":"Prison Room",
                "aliases":[
                   "exit",
+<<<<<<< HEAD
+				  "open door"
+=======
 				              "open door"
+>>>>>>> 7db3582251b454806fea833d491b0cf56da9a318
                ]
             },
             "map":6
@@ -30,7 +38,11 @@
                "name":"Prison Room",
                "aliases":[
                   "exit",
+<<<<<<< HEAD
+				  "open door"
+=======
 				              "open door"
+>>>>>>> 7db3582251b454806fea833d491b0cf56da9a318
                ]
             },
             "map":6
@@ -112,7 +124,11 @@
             "map":6
          }
       ]
+<<<<<<< HEAD
+   },   
+=======
    },
+>>>>>>> 7db3582251b454806fea833d491b0cf56da9a318
    {
       "description":"There are six prison cells in total (North-East, East, South-East, South-West, West and North-West.) There is light peering from a doorway on the south side of the room.",
       "name":{
@@ -128,8 +144,12 @@
                "name":"North-West Prison Cell",
                "aliases":[
                   "north west",
+<<<<<<< HEAD
+				  "north-west"
+=======
 				              "north-west",
                       "NE"
+>>>>>>> 7db3582251b454806fea833d491b0cf56da9a318
                ]
             },
             "map":0
@@ -150,7 +170,11 @@
                "name":"South-West Prison Cell",
                "aliases":[
                   "south west",
+<<<<<<< HEAD
+				  "south-west",
+=======
 				  "south-west"
+>>>>>>> 7db3582251b454806fea833d491b0cf56da9a318
                ]
             },
             "map":2
@@ -197,7 +221,11 @@
                ]
             },
             "map":7
+<<<<<<< HEAD
+         }		 					 
+=======
          }
+>>>>>>> 7db3582251b454806fea833d491b0cf56da9a318
       ],
       "interactions":[
          {
@@ -243,12 +271,27 @@
                ]
             },
             "map":6
-         }
+         },
+         {
+            "description":"You have entered the Hallway.",
+            "name":{
+               "name":"Hallway",
+               "aliases":[
+                  "east",
+				  "hallway"
+               ]
+            },
+            "map":8
+         },
       ],
       "interactions":[
 
       ]
+<<<<<<< HEAD
+   },   
+=======
    },
+>>>>>>> 7db3582251b454806fea833d491b0cf56da9a318
    {
       "description":"You are in the dungeon hallway. There is a North doorway that leads to an Alchemy Lab. The dungeon's exit gate is located East down the hallway. There is also a South doorway that leads to a Pantry. The west doorway leads back to the Training Room.",
       "name":"Hallway",
@@ -259,8 +302,12 @@
                "name":"Alchemy Lab",
                "aliases":[
                   "north",
+<<<<<<< HEAD
+                  "alchemy lab"
+=======
                   "alchemy lab",
                   "hallway"
+>>>>>>> 7db3582251b454806fea833d491b0cf56da9a318
                ]
             },
             "map":9
@@ -299,7 +346,11 @@
                ]
             },
             "map":7
+<<<<<<< HEAD
+         }				 
+=======
          }
+>>>>>>> 7db3582251b454806fea833d491b0cf56da9a318
       ],
       "interactions":[
 
@@ -331,7 +382,11 @@
                ]
             },
             "map":8
+<<<<<<< HEAD
+         }		 
+=======
          }
+>>>>>>> 7db3582251b454806fea833d491b0cf56da9a318
       ],
       "interactions":[
 
@@ -378,7 +433,11 @@
       "interactions":[
 
       ]
+<<<<<<< HEAD
+   },      
+=======
    },
+>>>>>>> 7db3582251b454806fea833d491b0cf56da9a318
    {
       "description":"You are in a lively forest, there's no signs of the dungeon you just escaped from. Congratulations, you won.",
       "name":"The End Forest",
