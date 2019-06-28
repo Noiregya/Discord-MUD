@@ -167,7 +167,7 @@ function generateInteractionsListString(interactions){
       }else {
         string += ', '
       }
-      string += interaction.name.name
+      string += interaction.name.name.toLowerCase()
       i++
     })
     return string+'.'
