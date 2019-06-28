@@ -21,15 +21,15 @@ const commands = {
   regHelp: /^HELP$|^H$|^MANUAL$|^MAN$/,
   regBuy: /^PURCHASE$|^BUY$/,
   regSell: /^SELL$/,
-  regGo: /^GO$|^ENTER$|LEAVE$|^CROSS$|^TRAVEL$/,
+  regGo: /^GO$|^ENTER$|^CROSS$|^TRAVEL$|^WALK$/,
   regFlee: /^FLEE$|^RUN$/,
   regLook: /^LOOK$|^WHERE$/,
   regTake: /^FETCH$|^TAKE$|^GET$|^GRAB$/,
   regGive: /^LEND$|^GIVE$/,
-  regDrop: /^THROW*$|^DROP$|^LEAVE$/,
+  regDrop: /^THROW$|^DROP$|^LEAVE$/,
   regKill: /^ATTACK$|^KILL$/,
   regSleep: /^REST$|^SLEEP$/,
-  regKeep: /^KEEP$|^SAVE$/,
+  regInteract: /^ACTIVATE$|^INTERACT$/,
   regBag: /^INVENTORY$|^BAG$/,
   regLaugh: /^LAUGH$|^GIGGLE$/,
   regTickle: /^TICKLE$/,
@@ -196,6 +196,52 @@ function resolveNamable(itemName, itemList){
   return item
 }
 
+/**
+ * @returns list of nearby players
+ */
+function who(currentPlayer, channel){
+  let map = maps[currentPlayer.position]
+  let nearbyPlayers = new Array()
+  players.forEach(player => {
+    if(player !== currentPlayer && player.position === currentPlayer.position){
+      nearbyPlayers.push(player)
+    }
+  })
+  return nearbyPlayers
+}
+
+/**
+ * @returns a string with a desciption of nearby players.
+ */
+function generateWhoString(nearbyPlayers){
+  let string = ''
+  switch(nearbyPlayers.length){
+    case 0:
+      break;
+    case 1:
+      string += `There\'s someone around, look it\'s ${nearbyPlayers[0].name}`
+      break;
+    default:
+      let i
+      for(i = 0; i < nearbyPlayers.length; i++){
+        switch (i) {
+          case 0:
+              string += nearbyPlayers[i].name
+            break;
+          case nearbyPlayers.length - 1:
+            string += ` and ${nearbyPlayers[i].name} are here too`
+            break;
+          default:
+            string += ` ,${nearbyPlayers[i].name}`
+        }
+      }
+  }
+  if(string){
+    string+='.'
+  }
+  return string
+}
+
 function lookAround(currentPlayer, request, channel){
   let item = resolveNamable(request, currentPlayer.inventory.items)
   //If there's an item
@@ -203,8 +249,9 @@ function lookAround(currentPlayer, request, channel){
       channel.send(item.description).catch(err => {console.log(err);})
   }else{
     let position = maps[currentPlayer.position]
-    let string = generateInteractionsListString(position.interactions)
-    channel.send(position.description+'\n'+string).catch(err => {console.log(err);})
+    let availableInteractions = generateInteractionsListString(position.interactions)
+    let nearbyPlayers = generateWhoString(who(currentPlayer, channel))
+    channel.send(position.description+'\n'+availableInteractions+'\n'+nearbyPlayers).catch(err => {console.log(err);})
   }
   //TODO: Remove grabbable that have been grabbed by the player
   //TODO: Add descritions for the things that need a pass and the pass is owned by the player
@@ -216,6 +263,7 @@ function travel(currentPlayer, directionName, channel){
     currentPlayer.position = direction.map
     channel.send(direction.description).catch(err => {console.log(err);})
     savePlayers()
+    lookAround(currentPlayer, undefined, channel)
   }
 }
 
@@ -291,17 +339,19 @@ client.on('message', function (message) {
       if (parsedMessage[0].toUpperCase().match(commands.regLook)){
         let i = 1;
         if(parsedMessage.length > 1){
-          if(parsedMessage[1].toUpperCase() === 'AT'){
+          if(parsedMessage.length > 2 && parsedMessage[1].toUpperCase() === 'AT'){
             i++
           }
         }
         lookAround(currentPlayer, parsedMessage[i], message.channel)
       }else if (parsedMessage[0].toUpperCase().match(commands.regGo)){
         let i = 1
-        if(parsedMessage[i].toUpperCase() === 'TO'){
-          i++
+        if(parsedMessage.length > 1){
+          if(parsedMessage.length > 2 && parsedMessage[i].toUpperCase() === 'TO'){
+            i++
+          }
+          travel(currentPlayer, parsedMessage[i], message.channel)
         }
-        travel(currentPlayer, parsedMessage[i], message.channel)
       }else if (parsedMessage[0].toUpperCase().match(commands.regBuy)){
       }
       else if (parsedMessage[0].toUpperCase().match(commands.regSell)){
@@ -321,7 +371,14 @@ client.on('message', function (message) {
       }
       else if (parsedMessage[0].toUpperCase().match(commands.regSleep)){
       }
-      else if (parsedMessage[0].toUpperCase().match(commands.regKeep)){
+      else if (parsedMessage[0].toUpperCase().match(commands.regInteract)){
+        let i = 1
+        if(parsedMessage.length > 1){
+          if(parsedMessage.length > 2 && parsedMessage[i].toUpperCase() === 'WITH'){
+            i++
+          }
+          interact(currentPlayer, parsedMessage[i])
+        }
       }
       else if (parsedMessage[0].toUpperCase().match(commands.regBag)){
       }
