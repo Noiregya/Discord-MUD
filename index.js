@@ -249,9 +249,15 @@ function lookAround(currentPlayer, request, channel){
       channel.send(item.description).catch(err => {console.log(err);})
   }else{
     let position = maps[currentPlayer.position]
-    let availableInteractions = generateInteractionsListString(position.interactions)
-    let nearbyPlayers = generateWhoString(who(currentPlayer, channel))
-    channel.send(position.description+'\n'+availableInteractions+'\n'+nearbyPlayers).catch(err => {console.log(err);})
+    if(position){
+      let availableInteractions = generateInteractionsListString(position.interactions)
+      let nearbyPlayers = generateWhoString(who(currentPlayer, channel))
+      channel.send(position.description+'\n'+availableInteractions+'\n'+nearbyPlayers).catch(err => {console.log(err);})
+    }else{
+      console.log('Current position '+currentPlayer.position);
+        console.log(maps);
+    }
+
   }
   //TODO: Remove grabbable that have been grabbed by the player
   //TODO: Add descritions for the things that need a pass and the pass is owned by the player
