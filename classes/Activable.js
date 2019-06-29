@@ -9,7 +9,7 @@ class Activable extends Interaction{
    * Creates a Activable
    * @param {!Name} name - name of the Activable
    * @param {!string} description - description of the Activable
-   * @param {!WorldAction[]} consequences - Items to grab
+   * @param {!WorldAction[]} consequences - What to do
    */
   constructor (name, description, consequences) {
     super(name, description, 'activable')

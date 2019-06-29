@@ -22,7 +22,7 @@ const commands = {
   regBuy: /^PURCHASE$|^BUY$/,
   regSell: /^SELL$/,
   regGo: /^GO$|^ENTER$|^CROSS$|^TRAVEL$|^WALK$/,
-  regFlee: /^FLEE$|^RUN$/,
+  regUse: /^USE$|^ACTIVATE$|^OPEN$|^PULL$|^DRINK$|^PRESS$/,
   regLook: /^LOOK$|^WHERE$/,
   regTake: /^FETCH$|^TAKE$|^GET$|^GRAB$|^PICK$/,
   regGive: /^LEND$|^GIVE$/,
@@ -66,7 +66,7 @@ function parseMessage (string) {
 
 function sendHelp(author){
   var player = checkPlayerExist(author)
-  if(player){
+  if(player && player.guild.name){
     var string = 'You have been active in '+player.guild.name+' for the last time.'
   }else{
     var string = 'It says on the register that you have never played.'
@@ -302,6 +302,7 @@ function pickUp(currentPlayer, grabbableName, channel){
       maps[currentPlayer.position].userItems = maps[currentPlayer.position].userItems.filter(
         currentItem => currentItem !== item)
       channel.send(`Added ${item.name.name} to your inventory.`).catch(err => {console.log(err);})
+      savePlayers()
   }
 }
 
@@ -312,9 +313,89 @@ function drop(currentPlayer, itemName, channel){
       currentItem => currentItem !== item)
     maps[currentPlayer.position].userItems.push(item)
     channel.send(`Item ${item.name.name} dropped.`).catch(err => {console.log(err);})
+    savePlayers()
   }
 }
 
+function death(currentPlayer, consequence, channel){//Kills the player
+  players = players.filter(player => {return player.id !== currentPlayer.id})
+  channel.send(consequence.description).catch(err => {console.log(err);})
+  savePlayers()
+}
+
+function teleportation(currentPlayer, consequence, channel){//Teleports the player
+  currentPlayer.position = consequence.map
+  channel.send(consequence.description).catch(err => {console.log(err);})
+  savePlayers()
+}
+
+function lock(currentPlayer, consequence, channel){//Check if the user has a pass then do action
+  if(currentPlayer.passes.includes(consequence.pass)){
+    channel.send(consequence.successDescription).catch(err => {console.log(err);})
+    if(consequence.consequences){
+      consequence.consequences.forEach(aConsequence => {
+        makeItHappen(currentPlayer, consequence.consequences, channel)
+      })
+    }
+  }else{
+    channel.send(consequence.description).catch(err => {console.log(err);})
+  }
+}
+
+function unlock(currentPlayer, consequence, channel){//Gives the player a pass
+  currentPlayer.passes.push(consequence.pass)
+  channel.send(consequence.description).catch(err => {console.log(err);})
+  savePlayers()
+}
+
+function makeItHappen(currentPlayer, consequences, channel){
+  consequences.forEach(consequence => {
+    switch (consequence.type) {
+      case 'death':
+        death(currentPlayer, consequence, channel)
+        break;
+      case 'teleportation':
+        teleportation(currentPlayer, consequence, channel)
+        break;
+      case 'lock':
+        lock(currentPlayer, consequence, channel)
+        break;
+      case 'unlock':
+        unlock(currentPlayer, consequence, channel)
+        break;
+      default:
+
+    }
+  })
+}
+
+
+function use(currentPlayer, itemName, channel){
+  let message
+  let consequences
+  let item = resolveNamable(itemName, currentPlayer.inventory.items)
+  if(item){
+    if(item.consequences.length < 1){
+      message = `This ${item.name.name} does nothing at all, you don't even know how to use it.`
+    } else {
+      consequences = item.consequences
+    }
+  }else{
+    let interaction = resolveNamable(itemName, maps[currentPlayer.position].interactions)
+    console.log(maps[currentPlayer.position].interactions);
+    if(interaction){
+      console.log(interaction);
+      if(interaction.consequences.length < 1){
+        message = `You tried to use the ${interaction.name.name}, and it did nothing at all.`
+      } else {
+        consequences = interaction.consequences
+      }
+    }
+  }
+  if(consequences){
+    makeItHappen(currentPlayer, consequences, channel)
+  }
+}
 
 /* EVENTS */
 
@@ -369,7 +450,12 @@ client.on('message', function (message) {
         //console.log('Activity detected from '+currentPlayer.name)
 
       } else if (message.channel.type === 'dm') { //in a DM
-
+        let currentPlayer = checkPlayerExist (message.author)
+        if(!currentPlayer){
+          currentPlayer = new Classes.Player(message.author.tag, message.author.id, message.author.id)
+          players.push(currentPlayer)
+          savePlayers()
+        }
       }
 
       if (parsedMessage[0].toUpperCase().match(commands.regHelp)) {
@@ -396,7 +482,14 @@ client.on('message', function (message) {
         }
         else if (parsedMessage[0].toUpperCase().match(commands.regSell)){
         }
-        else if (parsedMessage[0].toUpperCase().match(commands.regFlee)){
+        else if (parsedMessage[0].toUpperCase().match(commands.regUse)){
+          let i = 1
+          if(parsedMessage.length > 1){
+            if(parsedMessage.length > 2 && parsedMessage[i].toUpperCase() === 'THE'){
+              i++
+            }
+            use(currentPlayer, parsedMessage[i], message.channel)
+          }
         }
         else if (parsedMessage[0].toUpperCase().match(commands.regTake)){
           let i = 1

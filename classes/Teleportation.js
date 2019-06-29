@@ -9,10 +9,10 @@ class Teleportation extends WorldAction {
    * @constructor
    * Creates a Teleportation
    * @param {!string} description - Teleportation description
+   * @param {!int} map - place to send the player
    * @param {!Player} player - Player to teleport
-   * @param {!Map} map - place to send the player
    */
-  constructor (description, player, map) {
+  constructor (description, map, player) {
     super(description, 'teleportation')
     this.player = player
     this.map = map

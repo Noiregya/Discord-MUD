@@ -7,7 +7,7 @@ class WorldAction {
    * @constructor
    * Creates a WorldAction, type is optionnal, but it won't do anything if it's invalid.
    * @param {!string} description - WorldAction description
-   * @param {?string} type - WorldAction type, Death Teleportation or Unlock
+   * @param {?string} type - WorldAction type, Death Teleportation Lock or Unlock
    */
   constructor (description, type) {
     this.description = description
