@@ -93,11 +93,11 @@ let mapFour = new Classes.WorldMap(
         5
 	)
 ],[new Classes.Activable(new Classes.Name('Main entrence', ['exit', 'door', 'outside', 'troll']), 'This seems to be the main entrence.',
-  new Classes.Lock(
-      'The troll is gone, you can finally escape, and oh boy, you do!',
-      'You can see outside, threes are waving to the wind, but a troll is waiting for you at the entrence, better not take that route if you want to be back home in one piece.',
-      'lever',[new Classes.Teleportation('You run outside, welcomed by the soft wind and the grassy smells.', 7)]
-    ))]
+    [new Classes.Lock(
+        'The troll is gone, you can finally escape, and oh boy, you do!',
+        'You can see outside, threes are waving to the wind, but a troll is waiting for you at the entrence, better not take that route if you want to be back home in one piece.',
+        'lever',[new Classes.Teleportation('You run outside, welcomed by the soft wind and the grassy smells.', 7)]
+      ) ] ) ]
 )
 
 let mapFive = new Classes.WorldMap(

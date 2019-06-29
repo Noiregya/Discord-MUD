@@ -350,6 +350,7 @@ function unlock(currentPlayer, consequence, channel){//Gives the player a pass
 }
 
 function makeItHappen(currentPlayer, consequences, channel){
+  console.log(consequences);
   consequences.forEach(consequence => {
     switch (consequence.type) {
       case 'death':
