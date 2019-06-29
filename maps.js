@@ -19,7 +19,7 @@ let mapOne = new Classes.WorldMap( //Declare a first map
 
 let mapTwo = new Classes.WorldMap( 
     new Classes.Name('Prison Room', ['north', 'exit', 'door']),
-    'You are in the prison room. There is a prison cell at the North-East. There is light peering from a doorway on the south side of the room.',
+    'You are in the prison room. There is a prison cell at the North-West. There is light peering from a doorway on the south side of the room.',
     [new Classes.Direction(
         new Classes.Name('North-West Prison Cell', ['north-west', 'north west']),
         'You have entered the North-West Prison Cell.',
