@@ -254,6 +254,7 @@ function lookAround(currentPlayer, request, channel){
       let availableInteractions =''
       if(position.interactions){
         availableInteractions = generateInteractionsListString(position.interactions.filter(interaction => {
+          console.log(interaction);
           return !currentPlayer.interactionsDone.includes(interaction.name.name)
         }))
       }
