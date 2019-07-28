@@ -49,6 +49,10 @@ var maps = new Array()
 var isWritingPlayer = false
 var isWaiting = false
 
+/**
+ * Parse a message sent by anyone.
+ * @param string - The content of the message
+ */
 function parseMessage (string) {
   var spaces = string.trim().split('"')
   var peer = true
@@ -64,6 +68,10 @@ function parseMessage (string) {
   return parsedCommand.filter(value => Object.keys(value).length !== 0)
 }
 
+/**
+ * Send the help message in the player's DMs
+ * @param author - discord.js author of the message
+ */
 function sendHelp(author){
   var player = checkPlayerExist(author)
   if(player && player.guild.name){
@@ -78,7 +86,9 @@ function sendHelp(author){
       }, err => console.log('Could not send DM\n'+err))
 }
 
-//Save all players into a file
+/**
+ * Save all players into a file
+ */
 async function savePlayers(){
   //Is someone else writing
   if(!isWritingPlayer){
@@ -101,6 +111,9 @@ async function savePlayers(){
   }
 }
 
+/**
+ * Load player data from a file.
+ */
 function loadPlayers(){
   try{
     players = JSON.parse(fs.readFileSync(playersFilePath))
@@ -109,6 +122,9 @@ function loadPlayers(){
   }
 }
 
+/**
+ * Load map data from a file.
+ */
 function loadMaps(){
   try{
     maps = JSON.parse(fs.readFileSync(mapsFilePath))
@@ -155,6 +171,10 @@ function evaluateName(name, string){
   }
 }
 
+/**
+ * @param interactions - List of all the interactions to display
+ * @returns a human friendly text that lists the interactions to the player
+ */
 function generateInteractionsListString(interactions){
   var string
   let i = 0
@@ -176,9 +196,10 @@ function generateInteractionsListString(interactions){
 }
 
 /**
+ * Get a game object from its name or alias.
  * @param itemName string that should be used to try to match with names
  * @param itemList list of anything that has a property name containing a name object
- * @returns Namable object that the name corresponds to.
+ * @returns Namable object that the name corresponds to
  */
 function resolveNamable(itemName, itemList){
   let findItem = function(evaluatedItem){
@@ -198,6 +219,8 @@ function resolveNamable(itemName, itemList){
 }
 
 /**
+ * Make a list of all the other players around the player.
+ * @param currentPlayer - The player looking around
  * @returns list of nearby players
  */
 function who(currentPlayer, channel){
@@ -212,6 +235,8 @@ function who(currentPlayer, channel){
 }
 
 /**
+ * Make a human friendly string describing who's around.
+ * @param nearbyPlayers - List of all the players you want to list
  * @returns a string with a desciption of nearby players.
  */
 function generateWhoString(nearbyPlayers){
@@ -243,6 +268,12 @@ function generateWhoString(nearbyPlayers){
   return string
 }
 
+/**
+ * Gives the player a description of what's happening in the map they're in.
+ * @param currentPlayer - The player looking around
+ * @param request - Name of what the player want to look at if applicable
+ * @param channel - Channel to send the human friendly description in
+ */
 function lookAround(currentPlayer, request, channel){
   let item = resolveNamable(request, currentPlayer.inventory.items)
   //If there's an item
@@ -273,9 +304,15 @@ function lookAround(currentPlayer, request, channel){
     }
 
   }
-  //TODO: Add descritions for the things that need a pass and the pass is owned by the player
+  //TODO: Add descriptions for the things that need a pass and the pass is owned by the player
 }
 
+/**
+ * Tries to move a player from a map to another one.
+ * @param currentPlayer - Player traveling
+ * @param directionName - Where the player told the game they want to go
+ * @param channel - Channel to send the human friendly description in
+ */
 function travel(currentPlayer, directionName, channel){
   //console.log(maps[currentPlayer.position].directions);
   let direction = resolveNamable(directionName,maps[currentPlayer.position].directions)
@@ -287,6 +324,12 @@ function travel(currentPlayer, directionName, channel){
   }
 }
 
+/**
+ * Tries to pick up an item on the ground/map.
+ * @param currentPlayer - The player trying to pick up something
+ * @param grabbableName - The name the player gave for what they try to pick up
+ * @param channel - Channel to send the human friendly description in
+ */
 function pickUp(currentPlayer, grabbableName, channel){
   let item = resolveNamable(grabbableName, maps[currentPlayer.position].userItems)
   let grabbable = resolveNamable(grabbableName,maps[currentPlayer.position].interactions
@@ -306,7 +349,12 @@ function pickUp(currentPlayer, grabbableName, channel){
       savePlayers()
   }
 }
-
+/**
+ * Tries to drop an item from the player's inventory on the ground.
+ * @param currentPlayer - The player trying to drop something
+ * @param grabbableName - The name the player gave for what they try to drop
+ * @param channel - Channel to send the human friendly description in
+ */
 function drop(currentPlayer, itemName, channel){
   let item = resolveNamable(itemName, currentPlayer.inventory.items)
   if(item){
@@ -317,20 +365,38 @@ function drop(currentPlayer, itemName, channel){
     savePlayers()
   }
 }
-
+/**
+ * Kills the current player and display a message about it.
+ * @param currentPlayer - player to kill
+ * @param consequence - message to send upon death
+ * @param channel - channel to send the message in
+ */
 function death(currentPlayer, consequence, channel){//Kills the player
   players = players.filter(player => {return player.id !== currentPlayer.id})
   channel.send(consequence.description).catch(err => {console.log(err);})
   savePlayers()
 }
 
-function teleportation(currentPlayer, consequence, channel){//Teleports the player
+
+/**
+ * Teleports the current player and display a message about it.
+ * @param currentPlayer - player to teleprt
+ * @param consequence - object containing destination and message to send upon teleportation
+ * @param channel - channel to send the message in
+ */
+function teleportation(currentPlayer, consequence, channel){
   currentPlayer.position = consequence.map
   channel.send(consequence.description).catch(err => {console.log(err);})
   savePlayers()
 }
 
-function lock(currentPlayer, consequence, channel){//Check if the user has a pass then do action
+/**
+ * Check if the user has a pass then do an action.
+ * @param currentPlayer - player trying to do the restricted action
+ * @param consequence - Action condition, failed message, success message and action to do next
+ * @param channel - channel to send the message in
+ */
+function lock(currentPlayer, consequence, channel){
   if(currentPlayer.passes.includes(consequence.pass)){
     channel.send(consequence.successDescription).catch(err => {console.log(err);})
     if(consequence.consequences){
@@ -343,12 +409,24 @@ function lock(currentPlayer, consequence, channel){//Check if the user has a pas
   }
 }
 
+/**
+ * Give the player a pass.
+ * @param currentPlayer - player getting a pass
+ * @param consequence - Object containing the pass and message to send upon pass being given
+ * @param channel - channel to send the message in
+ */
 function unlock(currentPlayer, consequence, channel){//Gives the player a pass
   currentPlayer.passes.push(consequence.pass)
   channel.send(consequence.description).catch(err => {console.log(err);})
   savePlayers()
 }
 
+/**
+ * Do any WorldAction, redirects each kind to the appropriate function.
+ * @param currentPlayer - player the action is performed on
+ * @param consequences - consequences to that action
+ * @param channel - channel to send the message in
+ */
 function makeItHappen(currentPlayer, consequences, channel){
   console.log(consequences);
   consequences.forEach(consequence => {
@@ -371,7 +449,12 @@ function makeItHappen(currentPlayer, consequences, channel){
   })
 }
 
-
+/**
+ * Tries to use an item.
+ * @param currentPlayer - player trying to use the item
+ * @param itemName - name the player gave for that item
+ * @param channel - channel to send the message in
+ */
 function use(currentPlayer, itemName, channel){
   let message
   let consequences
@@ -423,6 +506,7 @@ client.on('ready', function(){
     console.log(err)
   })
 })
+// On message
 client.on('message', function (message) {
   if(message.content){
     // parse the message
