@@ -1,12 +1,11 @@
-# Mudbot
-Mudbot is a bot that will allow people to play a MUD (Multi User Dungeon) directly on discord!
+# HyperDimensionNeptunia-Adventure
+Is a bot that will allow people to play a MUD (Multi User Dungeon) directly on discord in a neptunia setting!
 ## Invite the bot
 [ Click here to invite the bot.](https://discordapp.com/api/oauth2/authorize?client_id=592768101381308441&permissions=0&scope=bot)
 ## Why
-Mudbot was created for Discord Hackweek first edition.
+Mudbot, a more general version, was created for Discord Hackweek first edition. Then it was converted to neptunia themed.
 ## Who
 Noiregya#1111
-Blue Sky#0001
 Cyber Elite�#3951
 ## How
 * Create a YAML file with your bot token in the "token" property
