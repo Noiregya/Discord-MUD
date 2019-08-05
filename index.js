@@ -40,13 +40,15 @@ const commands = {
   regAct: /^IMITATE|^ACT LIKE$|^ACT/
 }
 const helpMessage = 'You can look around by typing look, open your bag with bag and ask for help. Maybe you can also do other things, who knows?'
+const serversFilePAth = './servers.json'
 const playersFilePath = './players.json'
 const mapsFilePath = './maps.json'
 
 //Global vars (To save)
+var servers = new Array()
 var players = new Array()
 var maps = new Array()
-var isWritingPlayer = false
+var isWritingPlayer = false //Flag true while writing the players file, to limit amount of writes.
 var isWaiting = false
 
 /**
@@ -73,12 +75,15 @@ function parseMessage (string) {
  * @param author - discord.js author of the message
  */
 function sendHelp(author){
-  var player = checkPlayerExist(author)
-  if(player && player.guild.name){
+
+  /*var player = checkPlayerExist(author, a guild)
+  if(player && player.guild.name){ //TODO: replace guild.name because guild is now an ID
     var string = 'You have been active in '+player.guild.name+' for the last time.'
   }else{
     var string = 'It says on the register that you have never played.'
-  }
+  }*/
+  //TODO: Fix
+  var string = 'The command is still under construction.'
   author.createDM().then(
     DMChannel =>{
       DMChannel.send(helpMessage+'\n'+string).catch(
@@ -135,14 +140,47 @@ function loadMaps(){
 }
 
 /**
+ * Load player data from a file.
+ */
+function loadServers(){
+  try{
+    servers = JSON.parse(fs.readFileSync(playersFilePath))
+  }catch(error){
+    console.log(`No ${playersFilePath} file loaded.`);
+  }
+  client.guilds.toArray().forEach(guild => {
+    if(!getById(guilds, guild.id)){
+      var currentGuild = new Object()
+      currentGuild.id = guild.id
+      currentGuild.channel = null
+    }
+  })
+}
+
+/**
+ * Check for each element in an array if their property id equals a given id
+ * @param array - Object array that has an id property
+ * @param id - A snowflake
+ * @returns the element if found, else else
+ */
+function getById(array, id){
+  var included = false
+  array.forEach(object => {
+    if(object.id == id){
+      return object
+    }
+  })
+}
+
+/**
  * Check if a user already has a player in the playerlist.
  * @param user - The user
  * @return - undefined if it's a new player, the player object otherwise
  * TODO: Support for multiple guilds, unique player for (user_id,guid_id) pairs
  */
-function checkPlayerExist(user){
+function checkPlayerExist(user, guild){
   let testPlayer = function(player){
-    if(user.id === player.id){
+    if(user.id === player.id && guild.id === player.guild){
       return true
     }
   return false
@@ -509,40 +547,46 @@ client.on('ready', function(){
 // On message
 client.on('message', function (message) {
   if(message.content){
+    let currentPlayer
     // parse the message
     let parsedMessage = parseMessage(message.content)
     //is the message from the bot itself?
     if (message.author.id === client.user.id) { return }
     else{
-      //DM/Text channel check, might have to be used in command specific conditions too
-      let currentPlayer = checkPlayerExist (message.author)
-      if (message.channel.type === 'text') {//In a public channel
-        //Create contextual function checkplayer (needed for use with search)
-        if(currentPlayer === undefined){
-          //Player was never seen before
-          currentPlayer = new Classes.Player(message.member.displayName, message.author.id, message.guild)
-          players.push(currentPlayer)
-          savePlayers()
-        } else {
-          //Player is already known.
-          //Update last guild and username
-          //console.log('Player already known');
-          if(currentPlayer.guild.id !== message.guild.id || currentPlayer.name !== message.member.displayName){
-            currentPlayer.guild = message.guild
-            currentPlayer.name = message.member.displayName
+      if(message.channel.type === 'text'){
+        currentPlayer = checkPlayerExist (message.author, message.guild)
+          //Create contextual function checkplayer (needed for use with search)
+          if(currentPlayer === undefined){
+            console.log('creating player');
+            //Player was never seen before
+            currentPlayer = new Classes.Player(message.member.displayName, message.author.id, message.guild.id)
+            players.push(currentPlayer)
             savePlayers()
+          } else {
+            //Player is already known.
+            //Update last guild and username
+            //console.log('Player already known');
+            if(currentPlayer.name !== message.member.displayName){
+              currentPlayer.name = message.member.displayName
+              savePlayers()
+            }
           }
-        }
-        //console.log('Activity detected from '+currentPlayer.name)
-
-      } else if (message.channel.type === 'dm') { //in a DM
-        let currentPlayer = checkPlayerExist (message.author)
+      } else if(message.channel.type === 'dm'){
+        console.log('No action defined for DMs yet');
+        /*
+        let currentPlayer = checkPlayerExist (message.author, messgae.guild)
         if(!currentPlayer){
           currentPlayer = new Classes.Player(message.author.tag, message.author.id, message.author.id)
           players.push(currentPlayer)
           savePlayers()
         }
+        */
       }
+      //DM/Text channel check, might have to be used in command specific conditions too
+
+        //console.log('Activity detected from '+currentPlayer.name)
+
+
 
       if (parsedMessage[0].toUpperCase().match(commands.regHelp)) {
         sendHelp(message.author)
