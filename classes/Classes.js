@@ -13,6 +13,9 @@ const Grabbable = require('./Grabbable.js')
 const WorldMap = require('./WorldMap.js')
 const Direction = require('./Direction.js')
 const Quest = require('./Quest.js')
+const User = require('./User.js')
+const Universe = require('./Universe.js')
+const Utils = require('./Utils.js')
 
 
 module.exports = {
@@ -30,5 +33,8 @@ module.exports = {
   Activable: Activable,
   Grabbable: Grabbable,
   Direction: Direction,
-  Quest: Quest
+  Quest: Quest,
+  User: User,
+  Universe: Universe,
+  Utils: Utils
 }
