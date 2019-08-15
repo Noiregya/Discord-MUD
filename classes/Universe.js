@@ -53,7 +53,6 @@ class Universe {
       }
     return false
     }
-    console.log(this.players);
     return this.players.find(testPlayer)
   }
 
@@ -168,6 +167,32 @@ class Universe {
       channel.send(`Item ${item.name.name} dropped.`).catch(err => {console.error(err);})
       this.utils.saveUniverse(this)
     }
+  }
+
+  /**
+   * Shows the content of the user's inventory.
+   * @param currentPlayer - The player's whose bag shall be displayed
+   * @param channel - The channel in which the message shall be sent
+   */
+  bag(currentPlayer, channel, itemName){
+    if(itemName){
+      let item = this.utils.resolveNamable(itemName, currentPlayer.inventory.items)
+      if(item){
+        channel.send(`**${item.name.name}:**\n`+
+          `\`\`\`${item.description}\`\`\``
+        ).catch(err =>{
+          console.error(err);
+        })
+        return;
+      }
+    }
+    let answer = `You have **${currentPlayer.inventory.gold}** gold in your inventory, as well as:\n`
+    currentPlayer.inventory.items.forEach(item => {
+      answer += `*-${item.name.name}*\n`
+    })
+    channel.send(answer).catch(err =>{
+      console.error(err);
+    })
   }
   /**
    * Kills the current player and display a message about it.

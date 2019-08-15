@@ -315,6 +315,7 @@ client.on('message', function (message) {
             }
           }
           else if (parsedMessage[0].toUpperCase().match(commands.regBag)){
+            universe.bag(currentPlayer, message.channel, parsedMessage[1])
           }
           else if (parsedMessage[0].toUpperCase().match(commands.regLaugh)){
           }
