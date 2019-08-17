@@ -95,60 +95,6 @@ function sendHelp(author){
       }, err => console.error('Could not send DM\n'+err))
 }
 
-/**
- * Save all players into a file
-
-async function savePlayers(){
-  //Is someone else writing
-  if(!isWritingPlayer){
-    //No one is, write file
-    isWaiting = false
-    isWritingPlayer = true
-    fs.writeFile(playersFilePath,JSON.stringify(players),function(){
-      isWritingPlayer = false
-    })
-  } else {
-    if(isWaiting){
-      //Already waiting, abort
-      //console.error('Abort');
-      return
-    }
-    //Starts waiting 5 seconds
-    isWaiting = true;
-    //console.error('Timeout set');
-    setTimeout(savePlayers, 5000)
-  }
-}*/
-
-/**
- * Load player data from a file.
-
-function loadPlayers(){
-  try{
-    players = JSON.parse(fs.readFileSync(playersFilePath))
-  }catch(error){
-    console.error(`No ${playersFilePath} file loaded.`);
-  }
-}*/
-
-/**
- * Load player data from a file.
-
-function loadServers(){
-  try{
-    servers = JSON.parse(fs.readFileSync(playersFilePath))
-  }catch(error){
-    console.error(`No ${playersFilePath} file loaded.`);
-  }
-  client.guilds.array().forEach(guild => {
-    if(!utils.getById(guilds, guild.id)){
-      var currentGuild = new Object()
-      currentGuild.id = guild.id
-      currentGuild.channel = null
-    }
-  })
-}*/
-
 /* EVENTS */
 
 function loadUniverses(path){

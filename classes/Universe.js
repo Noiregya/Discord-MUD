@@ -35,9 +35,11 @@ class Universe {
       this.id = id
       this.players = players || new Array()
       this.maps = maps || new Array()
+      if(this.maps.length === 0){
+        this.loadMaps(mapsFilePath)
+      }
       this.utils = new Utils()
       this.universesFilePath = universesFilePath
-      this.loadMaps(mapsFilePath)
     }
 
   /**

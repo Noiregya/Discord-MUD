@@ -10,8 +10,9 @@ class WorldMap {
    * @param {!string} description - description of the map
    * @param {?Direction[]} directions - the directions you can take
    * @param {?Interaction[]} interactions - the interactions you can do
+   * @param {?Item[]} userItems - the items users can drop
    */
-  constructor (name, description, directions, interactions) {
+  constructor (name, description, directions, interactions, userItems) {
     this.description = description
     this.name = name
     if(directions==undefined){
@@ -24,7 +25,11 @@ class WorldMap {
     } else {
       this.interactions = interactions
     }
-    this.userItems = new Array() //List of items users can drop, dissapear when the bot is rebooted.
+    if(userItems==undefined){
+      this.userItems = new Array()
+    }else{
+      this.userItems = userItems;
+    }
   }
 }
 module.exports = WorldMap
