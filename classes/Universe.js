@@ -1,6 +1,34 @@
 const Utils = require('./Utils.js')
 const fs = require('fs');
 
+//Static methods
+
+/**
+ * Adds an item to the inventory, add the required pass(es) to the player if any.
+ * @param player - Player to give the item to
+ * @param item - Item to give to the player
+ */
+ function addItem(player, item){
+   //Add to inventory
+   player.inventory.items.push(item)
+   //Add passes to player
+   getPasses(item).forEach(pass =>{
+     if(!player.passes.includes(pass)){
+       player.passes.push(pass)
+     }
+   })
+ }
+
+ function getPasses(item){
+   let passes = new Array()
+   item.consequences.forEach(action => {
+     if(action.type === 'unlock'){
+       passes.push(action.pass)
+     }
+   })
+   return passes
+ }
+
 /**
  * @class
  * A universe.
@@ -143,11 +171,13 @@ class Universe {
       }))
       if(grabbable && !currentPlayer.interactionsDone.includes(grabbable.name.name)){
       currentPlayer.interactionsDone.push(grabbable.name.name)
-      grabbable.items.forEach(item => currentPlayer.inventory.items.push(item))
+      grabbable.items.forEach(item => {
+          addItem(currentPlayer, item)
+        })
       channel.send(grabbable.description).catch(err => {console.error(err);})
       this.utils.saveUniverse(this)
     } else if (item){
-        currentPlayer.inventory.items.push(item)
+        addItem(currentPlayer, item)
         this.maps[currentPlayer.position].userItems = this.maps[currentPlayer.position].userItems.filter(
           currentItem => currentItem !== item)
         channel.send(`Added ${item.name.name} to your inventory.`).catch(err => {console.error(err);})
@@ -155,7 +185,7 @@ class Universe {
     }
   }
   /**
-   * Tries to drop an item from the player's inventory on the ground.
+   * Tries to drop an item from the player's inventory on the ground. If the item provided any pass, the passes are lost.
    * @param currentPlayer - The player trying to drop something
    * @param grabbableName - The name the player gave for what they try to drop
    * @param channel - Channel to send the human friendly description in
@@ -166,6 +196,11 @@ class Universe {
       currentPlayer.inventory.items = currentPlayer.inventory.items.filter(
         currentItem => currentItem !== item)
       this.maps[currentPlayer.position].userItems.push(item)
+      let forDeletion = getPasses(item)
+      currentPlayer.passes = currentPlayer.passes.filter(instance => {
+        return !forDeletion.includes(instance)
+      })
+
       channel.send(`Item ${item.name.name} dropped.`).catch(err => {console.error(err);})
       this.utils.saveUniverse(this)
     }
@@ -247,7 +282,9 @@ class Universe {
    * @param channel - channel to send the message in
    */
   unlock(currentPlayer, consequence, channel){//Gives the player a pass
-    currentPlayer.passes.push(consequence.pass)
+    if(!currentPlayer.passes.includes(consequence.pass)){
+      currentPlayer.passes.push(consequence.pass)
+    }
     channel.send(consequence.description).catch(err => {console.error(err);})
     this.utils.saveUniverse(this)
   }
@@ -262,16 +299,16 @@ class Universe {
     consequences.forEach(consequence => {
       switch (consequence.type) {
         case 'death':
-          death(currentPlayer, consequence, channel)
+          this.death(currentPlayer, consequence, channel)
           break;
         case 'teleportation':
-          teleportation(currentPlayer, consequence, channel)
+          this.teleportation(currentPlayer, consequence, channel)
           break;
         case 'lock':
-          lock(currentPlayer, consequence, channel)
+          this.lock(currentPlayer, consequence, channel)
           break;
         case 'unlock':
-          unlock(currentPlayer, consequence, channel)
+          this.unlock(currentPlayer, consequence, channel)
           break;
         default:
 
@@ -297,18 +334,23 @@ class Universe {
       }
     }else{
       let interaction = this.utils.resolveNamable(itemName, this.maps[currentPlayer.position].interactions)
-      if(interaction){
+      if(interaction && interaction.type === "activable"){
         if(interaction.consequences.length < 1){
           message = `You tried to use the ${interaction.name.name}, and it did nothing at all.`
         } else {
           consequences = interaction.consequences
         }
+      }else if(interaction && interaction.type === "grabbable"){
+        message = "Shouldn't you try to pick it up instead?"
+      }else{
+        message = "Doesn't seems to do anything."
       }
     }
     if(consequences){
-      makeItHappen(currentPlayer, consequences, channel)
+      this.makeItHappen(currentPlayer, consequences, channel)
+    }else {
+      channel.send(message).catch(err => {console.error(err)})
     }
   }
-
 }
 module.exports = Universe

@@ -257,7 +257,7 @@ client.on('message', function (message) {
               if(parsedMessage.length > 2 && parsedMessage[i].toUpperCase() === 'WITH'){
                 i++
               }
-              //universe.interact(currentPlayer, parsedMessage[i]) function doesn't exist yet
+              universe.use(currentPlayer, parsedMessage[i], message.channel)
             }
           }
           else if (parsedMessage[0].toUpperCase().match(commands.regBag)){
