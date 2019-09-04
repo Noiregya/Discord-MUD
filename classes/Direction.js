@@ -8,12 +8,12 @@ class Direction {
    * Creates a Direction
    * @param {!Name} name - name of the Direction
    * @param {!string} description - description of the Direction
-   * @param {!Integer} map - the place index it leads to
+   * @param {!Integer} mapIndex - the place index it leads to
    */
-  constructor (name, description, map) {
+  constructor (name, description, mapIndex) {
     this.description = description
     this.name = name
-    this.map = map
+    this.mapIndex = mapIndex
   }
 }
 module.exports = Direction

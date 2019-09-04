@@ -74,7 +74,6 @@ class Universe {
    * Check if a user already has a player in the playerlist.
    * @param user - The user
    * @return - undefined if it's a new player, the player object otherwise
-   * TODO: Support for multiple guilds, unique player for (user_id,guid_id) pairs
    */
   checkPlayerExist(user){
     let testPlayer = function(player){
@@ -150,7 +149,7 @@ class Universe {
   travel(currentPlayer, directionName, channel){
     let direction = this.utils.resolveNamable(directionName,this.maps[currentPlayer.position].directions)
     if(direction){
-      currentPlayer.position = direction.map
+      currentPlayer.position = direction.mapIndex
       channel.send(direction.description).catch(err => {console.error(err);})
       this.utils.saveUniverse(this)
       this.lookAround(currentPlayer, undefined, channel)
@@ -251,7 +250,7 @@ class Universe {
    * @param channel - channel to send the message in
    */
   teleportation(currentPlayer, consequence, channel){
-    currentPlayer.position = consequence.map
+    currentPlayer.position = consequence.mapIndex
     channel.send(consequence.description).catch(err => {console.error(err);})
     this.utils.saveUniverse(this)
   }
