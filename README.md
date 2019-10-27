@@ -1,7 +1,6 @@
 # Discord-MUD
 A engine that will allow to make MUD (Multi User Dungeon) playable directly on discord!
 ## Invite the bot
-[ Click here to invite the bot.](https://discordapp.com/api/oauth2/authorize?client_id=592768101381308441&permissions=0&scope=bot) +
 [Click here to join the discord server.](https://discord.gg/9qZkVMB)
 ## Why
 Discord-mud is an engine with a set of tools that you can use to create and run an online text-based adventure game. We will try to help you as much as we can if you have feature suggestions on the discord server!
