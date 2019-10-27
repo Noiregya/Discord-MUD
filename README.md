@@ -1,5 +1,5 @@
-# HyperDimensionNeptunia-Adventure
-Is a bot that will allow people to play a MUD (Multi User Dungeon) directly on discord in a neptunia setting!
+# Discord-MUD
+A engine that will allow to make MUD (Multi User Dungeon) playable directly on discord!
 ## Invite the bot
 [ Click here to invite the bot.](https://discordapp.com/api/oauth2/authorize?client_id=592768101381308441&permissions=0&scope=bot)
 ## Why
