@@ -54,10 +54,10 @@ function generateName(htmlName){
 function generateMap(htmlMap){
   return new Classes.WorldMap(
     generateName(htmlMap.elements[0]),
-    htmlMap.getElementsByName('description')[0].getTextContent(),
-    generateDirections(htmlMap.getElementsByName('direction')),
-    generateInteractions(htmlMap.getElementsByName('interaction')),
-    generateItems(htmlMap.getElementsByName('item'))
+    htmlMap.elements[1].getTextContent(),//Description
+    generateDirections(htmlMap.elements[2]),//Directions
+    generateInteractions(htmlMap.elements[3]),//Interactions
+    generateItems(htmlMap.elements[4])//Items
   );
 }
 function generateMaps(){
