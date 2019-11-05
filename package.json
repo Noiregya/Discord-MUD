@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/Noiregya/mudbot#readme",
   "dependencies": {
+    "browserify": "^16.5.0",
     "discord.js": "^11.5.1",
     "js-yaml": "^3.13.1"
   }

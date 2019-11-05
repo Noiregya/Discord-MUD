@@ -1,76 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>HDN Adventure map editor</title>
-  <script>
-    const Classes = require('../classes/Classes.js');
-    function generateItem(htmlItem){
-      //TODO
-    }
-    function generateInteraction(htmlInteraction){
-      //TODO
-    }
-    function generateDirection(htmlDirection){
-      return new Classes.Direction(
-        generateName(htmlDirection.getElementsByName('name')),
-        htmlDirection.getElementsByName('description')[0].getTextContent(),
-        htmlDirection.getElementsByName('targetMap')[0].value()
-      );
-    }
-    function generateItems(htmlItems){
-      let items = new Array();
-      htmlItems.forEach(htmlItem =>{
-        items.push(generateItem(htmlItem));
-      })
-      return items;
-    }
-    function generateInteractions(htmlInteractions){
-      let interactions = new Array();
-      htmlInteractions.forEach(htmlInteraction => {
-        interactions.push(generateInteraction(htmlInteraction));
-      })
-      return interactions;
-    }
-    function generateDirections(htmlDirections){
-      var directions = new Array();
-      htmlDirections.forEach(htmlDirection => {
-        directions.push(generateDirection(htmlDirection));
-      })
-      return directions;
-    }
-    function generateName(htmlName){
-      //TODO generate Aliases and load the text value for name
-    }
+  <title>Discord MUD map editor</title>
+  <script src="js/bundle.js"></script>
 
-    function generateMap(htmlMap){
-      return new Classes.WorldMap(
-        generateName(htmlMap.getElementsByName('name')),
-        htmlMap.getElementsByName('description')[0].getTextContent(),
-        generateDirections(htmlMap.getElementsByName('direction')),
-        generateInteractions(htmlMap.getElementsByName('interaction')),
-        generateItems(htmlMap.getElementsByName('item'))
-      );
-    }
-    function generateMaps(){
-      let htmlMaps = document.getElementsByName('map'); //get all elements of the map name
-      let maps = new Array();
-      htmlMaps.forEach(htmlMap=>{ //For each HTML Element
-        maps.push(generateMap(htmlMap)); //Add the JS element to the list
-      })
-      return maps;
-    }
-    function generateWorld(){
-      document.getElementById('result').innerHTML = generateMaps(); //put result in field
-    }
-  </script>
-<noscript>You need JavaScript enabled on your browser to support this page!</noscript>
+<noscript>You need JavaScript enabled on your browser to see this page!</noscript>
 </head>
 <body>
 
 <h1>HDN Adventure world editor</h1>
 <p>Build your world using the forms beneath then click "generate".</p>
 <form>
-  <button type="button" onclick="generateWorld()">Generate</button>
+  <div name="maps">
+    Description of the world: <input type="text">
+    <fieldset name="map">
+      <legend>Map:</legend>
+      <fieldset name="name">
+        <legend>Name:</legend>
+        <input type="text"></input>
+        <fieldset name="aliases">
+          <legend>Aliases:</legend>
+          <input type="text"></input>
+          <input type="text"></input>
+        </fieldset>
+      </fieldset>
+    </fieldset>
+  </div>
+  <button type="button" onclick="logic.generateWorld(document)">index.generateWorld() Generate</button>
 </form>
 <textarea name="result" id="result">
 
