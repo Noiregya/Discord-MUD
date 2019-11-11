@@ -8,11 +8,10 @@
 </head>
 <body>
 
-<h1>HDN Adventure world editor</h1>
+<h1>Discord MUD map editor</h1>
 <p>Build your world using the forms beneath then click "generate".</p>
 <form>
   <div name="maps">
-    Description of the world: <input type="text">
     <fieldset name="map">
       <legend>Map:</legend>
       <fieldset name="name">
@@ -20,13 +19,169 @@
         <input type="text"></input>
         <fieldset name="aliases">
           <legend>Aliases:</legend>
-          <input type="text"></input>
-          <input type="text"></input>
+          <fieldset name="alias">
+            <input type="text"></input>
+            <input type="button" value="Delete alias">
+          </fieldset>
+          <input type="button" value="Add alias">
         </fieldset>
       </fieldset>
+      Description of the map: <input name="map_description" type="text">
+    <fieldset name="directions">
+      <legend>Directions:</legend>
+      <fieldset name="direction">
+        Map index:<select name="Map index">
+          <option value=0>0</option>
+        </select>Direction description:<input type="text"></input>
+        <input type="button" value="Delete direction">
+      </fieldset>
+      <input type="button" value="Add direction">
     </fieldset>
+    <fieldset name="interactions">
+      <legend>Interactions:</legend>
+      <fieldset name=interaction>
+        <legend>Useless interaction:</legend>
+        <fieldset name="name">
+          <legend>Name:</legend>
+          <input type="text"></input>
+          <fieldset name="aliases">
+            <legend>Aliases:</legend>
+            <fieldset name="alias">
+              <input type="text"></input>
+              <input type="button" value="Delete alias">
+            </fieldset>
+            <input type="button" value="Add alias">
+          </fieldset>
+        </fieldset>
+        Interaction description:<input type="text"></input>
+        <input type="button" value="Delete interaction">
+      </fieldset>
+      <fieldset name=grabbable>
+        <legend>Grabbable:</legend>
+        <fieldset name="name">
+          <legend>Name:</legend>
+          <input type="text"></input>
+          <fieldset name="aliases">
+            <legend>Aliases:</legend>
+            <fieldset name="alias">
+              <input type="text"></input>
+              <input type="button" value="Delete alias">
+            </fieldset>
+            <input type="button" value="Add alias">
+          </fieldset>
+        </fieldset>
+        Interaction description:<input type="text"></input>
+        <fieldset name=items>
+          <legend>Items:</legend>
+          <fieldset name=item>
+            <legend>Item 1:</legend>
+            <fieldset name="name">
+              <legend>Name:</legend>
+              <input type="text"></input>
+              <fieldset name="aliases">
+                <legend>Aliases:</legend>
+                <fieldset name="alias">
+                  <input type="text"></input>
+                  <input type="button" value="Delete alias">
+                </fieldset>
+                <input type="button" value="Add alias">
+              </fieldset>
+            </fieldset>
+            Item description:<input type="text"></input>
+            <fieldset name="consequences">
+              <legend>Consequences:</legend>
+              <fieldset name="Death">
+                <legend>Death:</legend>
+                Death description:<input type="text"></input>
+                Target:<select>
+                  <option value="self">Self</option>
+                  <option value="target">Other</option>
+                </select>
+                <input type="button" value="Delete consequence">
+              </fieldset>
+              <fieldset name="Teleportation">
+                <legend>Teleportation:</legend>
+                Teleportation description:<input type="text"></input>
+                Map index:<select name="Map index">
+                  <option value=0>0</option>
+                </select>
+                Target:<select>
+                  <option value="self">Self</option>
+                  <option value="target">Other</option>
+                </select>
+              <input type="button" value="Delete consequence">
+              </fieldset>
+              <fieldset name="Lock">
+                <legend>Lock:</legend>
+                Success description:<input type="text"></input>
+                Failure description:<input type="text"></input>
+                Pass name:<input type="text"></input>
+                <fieldset name="consequences">
+                  <legend>Consequences:</legend>
+                  <fieldset name="Death">
+                    <legend>Death:</legend>
+                    Death description:<input type="text"></input>
+                    Target:<select>
+                      <option value="self">Self</option>
+                      <option value="target">Other</option>
+                    </select>
+                    <input type="button" value="Delete consequence">
+                  </fieldset>
+                  <input type="button" value="Add consequence">
+                </fieldset>
+                <input type="button" value="Delete consequence">
+              </fieldset>
+              <fieldset name="Unlock">
+                <legend>Unlock:</legend>
+                Unlock description:<input type="text"></input>
+                Pass name:<input type="text"></input>
+                <input type="button" value="Delete consequence">
+              </fieldset>
+              <input type="button" value="Add consequence">
+            </fieldset>
+            <input type="button" value="Delete item">
+          </fieldset>
+          <input type="button" value="Add item">
+        </fieldset>
+        <input type="button" value="Delete interaction">
+      </fieldset>
+      <fieldset name=activable>
+        <legend>Activable:</legend>
+        <fieldset name="name">
+          <legend>Name:</legend>
+          <input type="text"></input>
+          <fieldset name="aliases">
+            <legend>Aliases:</legend>
+            <fieldset name="alias">
+              <input type="text"></input>
+              <input type="button" value="Delete alias">
+            </fieldset>
+            <input type="button" value="Add alias">
+          </fieldset>
+        </fieldset>
+        Interaction description:<input type="text"></input>
+        <fieldset name="consequences">
+          <legend>Consequences:</legend>
+          <fieldset name="Death">
+            <legend>Death:</legend>
+            Death description:<input type="text"></input>
+            Target:<select>
+              <option value="self">Self</option>
+              <option value="target">Other</option>
+            </select>
+            <input type="button" value="Delete consequence">
+          </fieldset>
+          <input type="button" value="Add consequence">
+        </fieldset>
+        <input type="button" value="Delete interaction">
+      </fieldset>
+      <input type="button" value="Add interaction">
+    </fieldset>
+      <input type="button" value="Remove map">
+    </fieldset>
+    <input type="button" value="Add map">
   </div>
-  <button type="button" onclick="logic.generateWorld(document)">index.generateWorld() Generate</button>
+  <button type="button" onclick="logic.generateWorld(document)">Generate</button>
 </form>
 <textarea name="result" id="result">
 
