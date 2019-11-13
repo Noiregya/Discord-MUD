@@ -14,30 +14,51 @@
   <div name="maps">
     <fieldset name="map">
       <legend>Map:</legend>
-      <fieldset name="name">
+      <fieldset name="mapName">
         <legend>Name:</legend>
-        <input type="text"></input>
+        <input type="text" value='testname'></input>
         <fieldset name="aliases">
           <legend>Aliases:</legend>
           <fieldset name="alias">
-            <input type="text"></input>
+            <input type="text" value='Alias1'></input>
+            <input type="button" value="Delete alias">
+          </fieldset>
+          <fieldset name="alias">
+            <input type="text" value='Alias2'></input>
             <input type="button" value="Delete alias">
           </fieldset>
           <input type="button" value="Add alias">
         </fieldset>
       </fieldset>
-      Description of the map: <input name="map_description" type="text">
-    <fieldset name="directions">
+      Description of the map: <input name="mapDescription" type="text">
+    <fieldset name="mapDirections">
       <legend>Directions:</legend>
       <fieldset name="direction">
-        Map index:<select name="Map index">
+        <fieldset name="name">
+          <legend>Name:</legend>
+          <input type="text" value='testname'></input>
+          <fieldset name="aliases">
+            <legend>Aliases:</legend>
+            <fieldset name="alias">
+              <input type="text" value='Alias3'></input>
+              <input type="button" value="Delete alias">
+            </fieldset>
+            <fieldset name="alias">
+              <input type="text" value='Alias4'></input>
+              <input type="button" value="Delete alias">
+            </fieldset>
+            <input type="button" value="Add alias">
+          </fieldset>
+        </fieldset>
+        Map index:<select name="mapIndex">
           <option value=0>0</option>
-        </select>Direction description:<input type="text"></input>
+          <option value=1>1</option>
+        </select>Direction description:<input type="text" name='description' value='this is a test direction description'></input>
         <input type="button" value="Delete direction">
       </fieldset>
       <input type="button" value="Add direction">
     </fieldset>
-    <fieldset name="interactions">
+    <fieldset name="mapInteractions">
       <legend>Interactions:</legend>
       <fieldset name=interaction>
         <legend>Useless interaction:</legend>
@@ -184,8 +205,6 @@
   <button type="button" onclick="logic.generateWorld(document)">Generate</button>
 </form>
 <textarea name="result" id="result">
-
 </textarea>
-
 </body>
 </html>

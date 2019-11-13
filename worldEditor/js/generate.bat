@@ -1,1 +1,1 @@
-browserify index.js > bundle.js
+browserify -s logic index.js > bundle.js
