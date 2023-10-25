@@ -4,7 +4,8 @@
   "description": "A bot created for discord Hackweek. It's a textual adventure game playable within discord in multiplayer.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "ts-node discordbot.ts"
   },
   "repository": {
     "type": "git",
@@ -23,8 +24,9 @@
   },
   "homepage": "https://github.com/Noiregya/mudbot#readme",
   "dependencies": {
-    "browserify": "^16.5.0",
-    "discord.js": "^11.5.1",
-    "js-yaml": "^3.13.1"
+    "@types/node": "^20.8.9",
+    "discord.js": "^14.13.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
   }
 }

@@ -1,4 +1,3 @@
 node_modules/
-secret.yaml
-universes/
-generatedMaps.json
+config.json
+dist/
